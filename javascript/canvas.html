@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0
+Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Canvas test</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        <meta name="keywords" content=""/>
+        <meta name="description" content=""/>
+    </head>
+
+    <body>
+      <canvas id="test1" width="300" height="300"></canvas>
+      <canvas id="test2" width="300" height="300"></canvas>
+      <canvas id="test3" width="300" height="300"></canvas>
+      <canvas id="test4" width="300" height="300"></canvas>
+      <canvas id="test5" width="300" height="300"></canvas>
+      <canvas id="test6" width="300" height="300"></canvas>
+
+      <script type="text/javascript" charset="utf-8">
+	window.addEventListener('load', function () {
+	    // Browser support?
+	    if(document.getElementById('test1').getContext){
+	    	context = contextForCanvasElement('test1');
+
+		/*
+		   Rectangle
+		*/
+		// arguments: (x, y, width, height)
+		context.fillRect  (10, 0, 100, 25);
+		context.strokeRect(10, 35, 100, 25);
+		context.clearRect (20, 55,  80, 10);
+		context.strokeRect(10, 70, 100, 25);
+
+	    	context = contextForCanvasElement('test2');
+
+		/*
+		   Triangle
+		*/
+		context.beginPath();
+		context.moveTo(10, 10); //start point
+		context.lineTo(100, 100);
+		context.lineTo(200, 10);
+		context.lineTo(9, 10);
+
+		context.fill();
+		context.stroke();
+		context.closePath();
+
+		/*
+		   Smile
+		*/
+	    	context = contextForCanvasElement('test3');
+
+		context.strokeStyle = '#FF8A00';
+		context.lineWidth   = 4;
+
+		context.beginPath();
+		context.arc(75,75,45,0,Math.PI*2,true); //Big circle
+		context.moveTo(110,75);
+		context.arc(75,75,35,0,Math.PI,false);  //Smile
+		context.moveTo(65,65);
+		context.arc(60,65,5,0,Math.PI*2,true);  //Left eye
+		context.moveTo(95,65);
+		context.arc(90,65,5,0,Math.PI*2,true);  //Right eye
+
+		context.stroke();
+		context.closePath();
+
+		/* 
+		   Circle
+	        */
+	    	context = contextForCanvasElement('test4');
+
+		for(var i=1; i<5; i++){
+		    boolean_value = [false,true];
+
+		    var x              = i*50;
+		    var y              = 50;
+		    var radius         = 20;
+		    var startAngle     = 0;
+		    var endAngle       = (Math.PI*i)/2;
+		    var anticlockwise  = boolean_value[parseInt(Math.random()+0.5)];
+
+		    context.beginPath();
+		    context.arc(x, y, radius, startAngle, endAngle, anticlockwise);
+		    context.stroke();
+		}
+
+		/*
+		   QuadraticCurve
+		*/
+	    	context = contextForCanvasElement('test5');
+
+		context.lineWidth =  3;
+
+		var x     = 240; // X axis of end point
+		var y     = 60;  // Y axis of end point
+		var cp1x  = 30;  // X axis of control point
+		var cp1y  = 20;  // Y axis of control point
+
+		context.beginPath();
+		context.moveTo(30, 90); // Inicial point
+		context.quadraticCurveTo(cp1x, cp1y, x, y);
+		context.stroke();
+
+		/*
+		   BelzierCurve
+	        */
+	    	context = contextForCanvasElement('test6');
+
+		context.lineWidth =  3; //Define o tamanho da linha do stroke.
+
+		var x     = 240; // X axis of end point
+		var y     = 60;  // Y axis of end point
+		var cp1x  = 60;  // X axis of control point
+		var cp1y  = 10;  // Y axis of control point
+		var cp2x  = 210; // X axis of second control point
+		var cp2y  = 20;  // Y axis of second control point
+
+		context.beginPath();
+		context.moveTo(30, 90);
+		context.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y);
+		context.stroke();
+	    }
+	  }, false);
+
+	  function contextForCanvasElement(canvasElement){
+	      var context = document.getElementById(canvasElement).getContext('2d');
+
+	      // Some color and line properties
+	      context.fillStyle   = '#264761';
+	      context.strokeStyle = '#9233A7';
+	      context.lineWidth   = 4;
+
+	      return context;
+	  }
+      </script>
+    </body>
+</html>
