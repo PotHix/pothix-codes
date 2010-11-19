@@ -12,6 +12,7 @@ resize (){
    for i in `ls $FILES_FOLDER`
    do
       convert $FILES_FOLDER/$i -resize 1024x768 $2/$i
+      echo "File $i converted"
    done
 }
 
