@@ -1,0 +1,46 @@
+DIR=converted
+CURRENT_DIR=`pwd`
+
+resize (){
+   FILES_FOLDER=$CURRENT_DIR/$1
+
+   if [ ! -d $2 ]
+   then
+      mkdir $2
+   fi
+
+   for i in `ls $FILES_FOLDER`
+   do
+      convert $FILES_FOLDER/$i -resize 1024x768 $2/$i
+      echo "File $i converted"
+
+      if [ "$3" == "--mark" ]; then
+        mark $i $2/$i
+      fi
+   done
+}
+
+mark (){
+  local ABOVEFONTSIZE=8
+  let "BELOWFONTSIZE=$ABOVEFONTSIZE*2"
+
+  FINALFILENAME=$2
+  FONT=WenQuanYi-Micro-Hei-Regular
+
+  convert $1 -gravity SouthEast -fill gray -font $FONT  -pointsize $ABOVEFONTSIZE -annotate +20+28 'Photo by' $FINALFILENAME
+  convert $FINALFILENAME -gravity SouthEast -fill gray -font $FONT -pointsize $BELOWFONTSIZE -annotate +20+10 'PotHix' $FINALFILENAME
+}
+
+case $# in
+   0)
+      echo "Wrong number of arguments";
+      echo "Use:";
+      echo "photoresize relative/path/to/pictures [relative/path/to/converted/pictures] [--mark]";
+      ;;
+   1)
+      resize $1 $CURRENT_DIR/$1/$DIR $3
+      ;;
+   *)
+      resize $1 $2/$DIR $3
+      ;;
+esac
