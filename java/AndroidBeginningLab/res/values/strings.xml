@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="form_header">Questions Answered</string>
+  <string name="app_name">BeginningLab</string>
+	<string name="btn_go">Go</string>
+	<string name="hint_edit_query">Type your query text here</string>
+	<string name="im_feeling_lucky_search">I\'m Feeling Lucky Search</string>
+	<string name="bing_search">Bing Search</string>
+  <string name="ask_search">Ask Search</string>
+	<string name="maps_search">Maps Search</string>
+	<string name="image_search">Image Search</string>
+	<string name="android_reference_search">Android Reference Search</string>
+	<string name="android_source_search">Android Source Code Search</string>
+	<string name="query_added_toast">Query \"%s\" added to query list.</string>
+	<string name="preferences">Preferences</string>
+	<string name="default_search">Default Search</string>
+	<string name="default_search_summary">Set the default search when the list item is clicked</string>
+</resources>

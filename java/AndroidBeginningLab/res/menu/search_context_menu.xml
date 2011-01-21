@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+<item android:id="@+id/lucky_search"
+		android:title="@string/im_feeling_lucky_search"/>
+<item android:id="@+id/bing_search"
+    android:title="@string/bing_search"/>
+<item android:id="@+id/ask_search"
+    android:title="@string/ask_search"/>
+<item android:id="@+id/maps_search"
+		android:title="@string/maps_search"/>
+<item android:id="@+id/image_search"
+		android:title="@string/image_search"/>
+<item android:id="@+id/android_reference_search"
+		android:title="@string/android_reference_search"/>
+<item android:id="@+id/android_source_search"
+		android:title="@string/android_source_search"/>
+</menu>

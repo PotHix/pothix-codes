@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent" android:padding="2dip">
+<!-- Step 01: Uncomment out these tags one at a time and select the Layout
+     tab to see how we build the RelativeLayout. -->
+
+	<TextView android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:text="@string/form_header"
+		android:textAppearance="@android:style/TextAppearance.Large"
+		android:id="@+id/HeaderText" />
+	<View android:layout_height="2dip" android:background="@android:color/white" 
+		android:layout_width="fill_parent" android:layout_below="@id/HeaderText"
+		android:id="@+id/LineView" android:layout_marginTop="2dip" android:layout_marginBottom="2dip"/>
+
+<!--  Note that the button has to come first, even though it is aligned right,
+      because the following EditText is dependent on it. Versions 1.6 and
+      beyond allow these references to work in either order, so it is important
+      to test RelativeLayout against Android 1.5 if 1.5 is supported. -->
+
+	<Button android:layout_width="wrap_content" android:text="@string/btn_go"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center_horizontal"
+		android:id="@+id/ButtonGo"
+		android:layout_below="@id/LineView"
+		android:layout_alignParentRight="true">
+	</Button>
+	<EditText android:layout_height="wrap_content"
+		android:layout_width="wrap_content"
+		android:id="@+id/EditTextQuery"
+		android:layout_below="@id/LineView"
+		android:layout_alignParentLeft="true"
+		android:layout_toLeftOf="@id/ButtonGo">
+	</EditText>
+</RelativeLayout>

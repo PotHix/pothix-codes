@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string-array name="search_types">
+<item>@string/im_feeling_lucky_search</item>
+<item>@string/bing_search</item>
+<item>@string/ask_search</item>
+<item>@string/maps_search</item>
+<item>@string/image_search</item>
+<item>@string/android_reference_search</item>
+<item>@string/android_source_search</item>
+</string-array>
+<string-array name="search_type_ids">
+<item>lucky_search</item>
+<item>bing_search</item>
+<item>ask_search</item>
+<item>maps_search</item>
+<item>image_search</item>
+<item>android_reference_search</item>
+<item>android_source_search</item>
+</string-array>
+</resources>

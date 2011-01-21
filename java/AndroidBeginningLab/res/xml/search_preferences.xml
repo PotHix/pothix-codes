@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+	<ListPreference android:entries="@array/search_types"
+		android:entryValues="@array/search_type_ids" 
+		android:key="@string/default_search"
+		android:title="@string/default_search"
+		android:summary="@string/default_search_summary"
+		android:showDefault="true"
+		android:defaultValue="lucky_search"/>
+</PreferenceScreen>
