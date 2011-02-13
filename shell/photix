@@ -2,19 +2,21 @@ DIR=converted
 CURRENT_DIR=`pwd`
 
 resize (){
-    FILES_FOLDER=$CURRENT_DIR/$1
+    DESTINATION_FOLDER=$1/$DIR
 
-    if [ ! -d $2 ]; then
-        mkdir $2
+    if [ ! -d $DESTINATION_FOLDER ]; then
+        mkdir $DESTINATION_FOLDER
     fi
 
-    for i in `ls $FILES_FOLDER`
+    for i in `ls $1`
     do
-        convert $FILES_FOLDER/$i -resize 1024x768 $2/$i
-        echo "File $i converted"
+        if [ $i != $DIR ]; then
+            convert $1/$i -resize 1024x768 $DESTINATION_FOLDER/$i
+            echo "File $i converted"
 
-        if [ "$3" == "--mark" ]; then
-            mark $2/$i
+            if [ "$2" == "--mark" ]; then
+                mark $DESTINATION_FOLDER/$i
+            fi
         fi
     done
 }
@@ -43,12 +45,9 @@ case $# in
     0)
         echo "Wrong number of arguments";
         echo "Use:";
-        echo "photoresize relative/path/to/pictures [relative/path/to/converted/pictures] [--mark]";
-        ;;
-    1)
-        resize $1 $CURRENT_DIR/$1/$DIR $3
+        echo "photoresize relative/path/to/pictures [--mark]";
         ;;
     *)
-        resize $1 $2/$DIR $3
+        resize $1 $2
         ;;
 esac
