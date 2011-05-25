@@ -1,0 +1,2 @@
+Solve the problem with this function:
+sum(idx(E, slice(0, 24, fib)))
