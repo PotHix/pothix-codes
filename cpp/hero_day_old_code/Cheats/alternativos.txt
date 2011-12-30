@@ -1,0 +1,52 @@
+if(nome[1]=='M'&&nome[2]=='o'&&nome[3]=='s'&&nome[4]=='t'&&nome[5]=='i'&&nome[6]=='s')
+     {
+     g++;gotoxy(2,g);g++;
+     cout<<"Soldado :Poxa cara você é mesmo o "<<nome<<".";
+     gotoxy(2,g);g++;delay(250);
+     cout<<"Soldado :Caramba eim você programa pra caramba viu...";
+     gotoxy(2,g);g++;delay(250);
+     cout<<"Soldado :conseguiu terminar esse trabalho sem a ajuda de alguns elementos";
+     gotoxy(2,g);g++;delay(250);
+     cout<<nome<<" :Agente faz o que é necessario ... fazer o que";
+     gotoxy(2,g);g++;delay(250);
+     cout<<"Soldado :você vai entrar no poço pra pegar o tesouro?";
+     gotoxy(2,g);g++;delay(250);
+     cout<<nome<<" :Vou sim.";
+     gotoxy(2,g);g++;delay(250);
+     cout<<nome<<" :Sera que é muito perigoso lá dentro?";
+     gotoxy(2,g);g++;delay(250);
+     cout<<"Soldado :Ah fica tranquilo que você é bom pra caramba e vai ser facil";
+     gotoxy(2,g);g++;delay(250);
+     cout<<"Soldado :É só não se preocupar com o algum trabalho que tudo fica ";
+     gotoxy(2,g);g++;delay(250);
+     cout<<"simples.E mesmo porque o Fabricio e o Igor não vao atrapalhar.";
+     gotoxy(2,g);g++;delay(250);
+     cout<<nome<<" :Cara, realmente.E isso é um alivio.Vo indo lá. Há braços!";
+     goto poscheat;
+     }
+     if(nome[1]=='F'&&nome[2]=='a'&&nome[3]=='b'&&nome[4]=='r'&&nome[5]=='i'&&nome[6]=='c'&&nome[7]=='i'&&nome[8]=='o')
+     {
+     g++;gotoxy(2,g);g++;
+     cout<<"Soldado :Ah não acredito. O Ti Rango por aqui... que droga!!!";
+     gotoxy(2,g);g++;delay(250);
+     cout<<"Soldado :Como anda a vida? fazendo nada como sempre?";
+     gotoxy(2,g);g++;delay(250);
+     cout<<"Soldado :Fiquei sabendo que você nem ajudou no trabalho de C++";
+     gotoxy(2,g);g++;delay(250);
+     cout<<nome<<" :Ah meu, eu fiquei pesquisando o trabalho de Kalango e n...";
+     gotoxy(2,g);g++;delay(250);
+     cout<<"Soldado :Tá Tá Tá eu sei que você vai se lamentar e reclamar agora.";
+     gotoxy(2,g);g++;delay(250);
+     cout<<nome<<" :Pô mais só porque eu não fiz nada você vai ficar tirando .";
+     gotoxy(2,g);g++;delay(250);
+     cout<<nome<<" :uma com a minha cara?";
+     gotoxy(2,g);g++;delay(250);
+     cout<<"Soldado :Você é moh preguiçoso num fez nada e ainda quer que eu ";
+     gotoxy(2,g);g++;delay(250);
+     cout<<"Soldado :elogie? Vai trabalhar e não me enche a paciencia!";
+     gotoxy(2,g);g++;delay(250);
+     cout<<"Olha o Igor ta te chamando lá.";
+     gotoxy(2,g);g++;delay(250);
+     cout<<"Igor :Ei cara olha essa fase do Mario que legal. é aqui perto do poço.";
+     goto poscheat;
+     }

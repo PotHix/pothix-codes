@@ -1,0 +1,33 @@
+ 
+    if(nome[1]=='M'&&nome[2]=='o'&&nome[3]=='a'&&nome[4]=='c'&&nome[5]=='i'&&nome[5]=='r')
+     {
+     gotoxy(2,g);g++;
+     cout<<"Soldado :Ola dona cigarra.";
+     gotoxy(2,g);g++;delay(250);
+     cout<<"Soldado :Onde anda seu marido o moAC/DCir?";
+     gotoxy(2,g);g++;delay(250);
+     cout<<"Cigarra :fooooiiiiiii fumaaaadooooo";
+     gotoxy(2,g);g++;delay(250);
+     cout<<"Soldado :Mas nossa e agora quem ira nos proteger?";
+     gotoxy(2,g);g++;delay(850);
+     cout<<"Chapolin :Eeeeeeuuuuuuu o Chapolin Colorado!!!!!";
+     gotoxy(2,g);g++;delay(250);
+     cout<<"Soldado :Chapolin você sabe C++ com comandos goto e vetores?";
+     gotoxy(2,g);g++;delay(250);
+     cout<<"Chapolin :Comandos goto e veto o que?";
+     gotoxy(2,g);g++;delay(250);
+     cout<<"Soldado :Vetores.";
+     gotoxy(2,g);g++;delay(250);
+     cout<<"Chapolin :Puxa. Não sei nem o que significa.";
+     gotoxy(2,g);g++;delay(250);
+     cout<<"Soldado :É que o professor Cigarro fumou muitos moacirs e virou ";
+     gotoxy(2,g);g++;delay(250);
+     cout<<"Soldado :Fumaça. Quem irá agora ensinar C para nós?";
+     gotoxy(2,g);g++;delay(250);
+     cout<<"Chapolin :Não sei. mas o que sei é que minhas anteninhas de vinil ";
+     gotoxy(2,g);g++;delay(250);
+     cout<<"Chapolin :estão detectando a presença do inimigo. E vem daquele poço!";
+     gotoxy(2,21);g++;delay(250);
+     cout<<"O SEU ACESSO A ESSE JOGO FOI NEGADO PORQUE VOCÊ FOI FUMADO";
+     goto fim;
+     }
