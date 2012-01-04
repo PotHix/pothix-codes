@@ -1,0 +1,17 @@
+# ASM
+ * Install nasm
+ * compile with `nasm -f elf64 pothix.asm`
+ * link with `ld -o pothix pothix.o`
+ * execute `./pothix`
+
+# C version
+
+The C version for the pothix.asm would be:
+
+`int main(){
+    char* message = "PotHix";
+    write(1, message, 6);
+    exit(0);
+}`
+
+The syscall codes can be seen here: http://lxr.free-electrons.com/source/arch/x86/include/asm/unistd_64.h
