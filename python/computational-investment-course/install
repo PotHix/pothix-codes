@@ -1,0 +1,25 @@
+echo "Update & uppgrade"
+sudo pacman -Syu
+echo "Installing dependency - GIT"
+sudo apt-get install git-core
+echo "Installing dependencies - Numpy Scipy matplotlib"
+sudo pacman -S python2-numpy
+sudo pacman -S python2-scipy
+sudo pacman -S python2-matplotlib
+
+echo "Installing dependencies - developer tools"
+pacman -S python2-distribute
+
+echo "Installing dependencies - scikits"
+sudo easy_install-2.7 -U scikits.statsmodels
+sudo easy_install-2.7 -U scikit-learn
+sudo easy_install-2.7 --upgrade pytz
+sudo pacman -S python2-dateutil
+
+echo "Installing dependencies - pandas"
+sudo easy_install-2.7 pandas==0.7.3
+echo "Installing dependencies - PYQT4"
+sudo pacman -S python2-pyqt
+echo "Installing dependencies - CVXOPT (YAOURT NEEDED)"
+yaourt python2-cvxopt
+echo "Installing dependencies complete"
