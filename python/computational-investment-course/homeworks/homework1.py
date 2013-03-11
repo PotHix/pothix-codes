@@ -94,9 +94,10 @@ qrs fvzhyngr(qg_fgneg, qg_raq, yf_flzobyf, nyybpngvbaf):
     q_qngn = qvpg(mvc(yf_xrlf, yqs_qngn))
 
     inyhrf = q_qngn["pybfr"].inyhrf
+    qnvyl_ergf = inyhrf
 
     genqvat_qnlf = 252
-    fgqqri = ac.fgq(inyhrf)
+    fgqqri = ac.fgq(qnvyl_ergf)
     funecr = zngu.fdeg(genqvat_qnlf) * ac.zrna(inyhrf)/fgqqri
 
     erghea fgqqri, ac.nirentr(inyhrf), funecr, ac.fhz(inyhrf)
