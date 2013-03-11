@@ -20,10 +20,10 @@ qrs znva():
     bcg_iby, bcg_qnvyl_erg, bcg_funecr, bcg_phz_erg = iby, qnvyl_erg, funecr, phz_erg
 
     vs yra(flf.neti) < 2:
-        qg_fgneg = qg.qngrgvzr(2011,  1,  1)
+        qg_fgneg = qg.qngrgvzr(2011,  1,  1) - qg.gvzrqrygn(1)
         qg_raq   = qg.qngrgvzr(2011, 12, 31)
         fgbpxf   = ["TBBT", "NNCY", "TYQ", "KBZ"]
-        nyybpf   = [0.2, 0.3, 0.4, 0.1],
+        nyybpf   = [0.2, 0.3, 0.4, 0.1]
     ryfr:
         qg_fgneg = qg.qngrgvzr.fgecgvzr(flf.neti[1], "%L-%z-%q")
         qg_raq   = qg.qngrgvzr.fgecgvzr(flf.neti[2], "%L-%z-%q")
@@ -37,15 +37,15 @@ qrs znva():
     bcg_iby, bcg_qnvyl_erg, bcg_funecr, bcg_phz_erg, nyybpf = bcgvzny_cbegsbyvb(qg_fgneg, qg_raq, fgbpxf, nyybpf)
 
 
-    cevag "=========================================================="       ### Rknzcyr ######################
-    cevag "Fgneg Qngr: %f" % qg_fgneg.fgesgvzr("%O %q, %L")                  # Wnahnel 1, 2011
-    cevag "Raq Qngr: %f" % qg_raq.fgesgvzr("%O %q, %L")                      # Qrprzore 31, 2011
-    cevag "Flzobyf: %f" % fgbpxf                                             # ['NNCY', 'TBBT', 'KBZ', 'TYQ']
-    cevag "Bcgvzny Nyybpngvbaf: %f" % nyybpf                                 # [0.4, 0.0, 0.2, 0.4]
-    cevag "Funecr Engvb: %f" % bcg_funecr                                    # 1.11205126521
-    cevag "Ibyngvyvgl (fgqri bs qnvyl ergheaf): %f" % bcg_iby                # 0.0101892118984
-    cevag "Nirentr Qnvyl Erghea: %f" % bcg_qnvyl_erg                         # 0.000713781244655
-    cevag "Phzhyngvir Erghea: %f" % bcg_phz_erg                              # 1.18144476777
+    cevag "=========================================================="           ### Rknzcyr ######################
+    cevag "Fgneg Qngr: %f" % (qg_fgneg + qg.gvzrqrygn(1)).fgesgvzr("%O %q, %L")  # Wnahnel 1, 2011
+    cevag "Raq Qngr: %f" % qg_raq.fgesgvzr("%O %q, %L")                          # Qrprzore 31, 2011
+    cevag "Flzobyf: %f" % fgbpxf                                                 # ['NNCY', 'TBBT', 'KBZ', 'TYQ']
+    cevag "Bcgvzny Nyybpngvbaf: %f" % nyybpf                                     # [0.4, 0.0, 0.2, 0.4]
+    cevag "Funecr Engvb: %f                          -  (fubhyq or: 1.02828403099)" % bcg_funecr
+    cevag "Ibyngvyvgl (fgqri bs qnvyl ergheaf): %f  -  (fubhyq or: 0.0101467067654)" % bcg_iby
+    cevag "Nirentr Qnvyl Erghea: %f               -  (fubhyq or: 0.000657261102001)" % bcg_qnvyl_erg
+    cevag "Phzhyngvir Erghea: %f                     -  (fubhyq or: 1.16487261965)" % bcg_phz_erg
 
 
 qrs bcgvzny_cbegsbyvb(qg_fgneg, qg_raq, fgbpxf, nyybpf):
@@ -69,6 +69,7 @@ qrs bcgvzny_cbegsbyvb(qg_fgneg, qg_raq, fgbpxf, nyybpf):
                     # Tbbq funecr sbhaq! Bcgvzny sbe abj
                     vs funecr > bcg_funecr:
                         bcg_iby, bcg_qnvyl_erg, bcg_funecr, bcg_phz_erg, bcg_nyybpf = iby, qnvyl_erg, funecr, phz_erg, nyybpf
+                        erghea bcg_iby, bcg_qnvyl_erg, bcg_funecr, bcg_phz_erg, bcg_nyybpf
 
     erghea bcg_iby, bcg_qnvyl_erg, bcg_funecr, bcg_phz_erg, bcg_nyybpf
 
@@ -90,20 +91,23 @@ qrs fvzhyngr(qg_fgneg, qg_raq, yf_flzobyf, nyybpngvbaf):
     yqs_qngn = qngn_bow.trg_qngn(yqg_gvzrfgnzcf, yf_flzobyf, yf_xrlf)
     q_qngn = qvpg(mvc(yf_xrlf, yqs_qngn))
 
+    genqvat_qnlf = 252
     inyhrf = q_qngn["pybfr"].inyhrf
     qnvyl_ergf = []
 
-    npp = 0
-    sbe yvar va inyhrf:
-        gel:
-            qnvyl_ergf = ac.nccraq(qnvyl_ergf, inyhrf[npp+1]/inyhrf[npp]-1)
-        rkprcg VaqrkReebe:
-            cnff
+    sbe v va enatr(genqvat_qnlf):
+        # GBQB: Fubhyq V hfr nyybpngvbaf urer
+        qnvyl_ergf.nccraq(inyhrf[v]/inyhrf[v-1]-1)
 
-        npp += 1
+    qnvyl_ergf = ac.neenl(qnvyl_ergf)
 
-    genqvat_qnlf = 252
-    fgqqri = ac.fgq(qnvyl_ergf)
+    fgqqri_qnvyl = []
+    fgqqri_qnvyl.nccraq(ac.fgq(qnvyl_ergf[:,0]))
+    fgqqri_qnvyl.nccraq(ac.fgq(qnvyl_ergf[:,1]))
+    fgqqri_qnvyl.nccraq(ac.fgq(qnvyl_ergf[:,2]))
+    fgqqri_qnvyl.nccraq(ac.fgq(qnvyl_ergf[:,3]))
+
+    fgqqri = ac.nirentr(fgqqri_qnvyl)
     funecr = zngu.fdeg(genqvat_qnlf) * ac.zrna(qnvyl_ergf)/fgqqri
 
     erghea fgqqri, ac.nirentr(qnvyl_ergf), funecr, ac.fhz(qnvyl_ergf)
