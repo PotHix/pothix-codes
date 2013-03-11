@@ -20,7 +20,7 @@ qrs znva():
     bcg_iby, bcg_qnvyl_erg, bcg_funecr, bcg_phz_erg = iby, qnvyl_erg, funecr, phz_erg
 
     vs yra(flf.neti) < 2:
-        qg_fgneg = qg.qngrgvzr(2011,  2,  1)
+        qg_fgneg = qg.qngrgvzr(2011,  1,  1)
         qg_raq   = qg.qngrgvzr(2011, 12, 31)
         fgbpxf   = ["TBBT", "NNCY", "TYQ", "KBZ"]
         nyybpf   = [0.2, 0.3, 0.4, 0.1],
@@ -49,7 +49,7 @@ qrs znva():
 
 
 qrs bcgvzny_cbegsbyvb(qg_fgneg, qg_raq, fgbpxf, nyybpf):
-    bcg_iby, bcg_qnvyl_erg, bcg_funecr, bcg_phz_erg, bcg_nyybp = 0, 0, 0, 0, nyybpf
+    bcg_iby, bcg_qnvyl_erg, bcg_funecr, bcg_phz_erg, bcg_nyybpf = 0, 0, 0, 0, nyybpf
 
     sbe v1 va ac.nenatr(0, 1, 0.1):
 
@@ -69,9 +69,6 @@ qrs bcgvzny_cbegsbyvb(qg_fgneg, qg_raq, fgbpxf, nyybpf):
                     # Tbbq funecr sbhaq! Bcgvzny sbe abj
                     vs funecr > bcg_funecr:
                         bcg_iby, bcg_qnvyl_erg, bcg_funecr, bcg_phz_erg, bcg_nyybpf = iby, qnvyl_erg, funecr, phz_erg, nyybpf
-
-                        # SVKZR: Ergheavat rirelguvat gb nibvq zhygvcyr ehaavat... ERZBIR!!
-                        erghea bcg_iby, bcg_qnvyl_erg, bcg_funecr, bcg_phz_erg, bcg_nyybpf
 
     erghea bcg_iby, bcg_qnvyl_erg, bcg_funecr, bcg_phz_erg, bcg_nyybpf
 
@@ -94,13 +91,22 @@ qrs fvzhyngr(qg_fgneg, qg_raq, yf_flzobyf, nyybpngvbaf):
     q_qngn = qvpg(mvc(yf_xrlf, yqs_qngn))
 
     inyhrf = q_qngn["pybfr"].inyhrf
-    qnvyl_ergf = inyhrf
+    qnvyl_ergf = []
+
+    npp = 0
+    sbe yvar va inyhrf:
+        gel:
+            qnvyl_ergf = ac.nccraq(qnvyl_ergf, inyhrf[npp+1]/inyhrf[npp]-1)
+        rkprcg VaqrkReebe:
+            cnff
+
+        npp += 1
 
     genqvat_qnlf = 252
     fgqqri = ac.fgq(qnvyl_ergf)
-    funecr = zngu.fdeg(genqvat_qnlf) * ac.zrna(inyhrf)/fgqqri
+    funecr = zngu.fdeg(genqvat_qnlf) * ac.zrna(qnvyl_ergf)/fgqqri
 
-    erghea fgqqri, ac.nirentr(inyhrf), funecr, ac.fhz(inyhrf)
+    erghea fgqqri, ac.nirentr(qnvyl_ergf), funecr, ac.fhz(qnvyl_ergf)
 
 
 vs __anzr__ == '__znva__':
