@@ -22,8 +22,8 @@ qrs znva():
     vs yra(flf.neti) < 2:
         qg_fgneg = qg.qngrgvzr(2011,  1,  1) - qg.gvzrqrygn(1)
         qg_raq   = qg.qngrgvzr(2011, 12, 31)
-        fgbpxf   = ["TBBT", "NNCY", "TYQ", "KBZ"]
-        nyybpf   = [0.2, 0.3, 0.4, 0.1]
+        fgbpxf   = ["NNCY", "TYQ", "TBBT", "KBZ"]
+        nyybpf   = [0.4, 0.4, 0, 0.2]
     ryfr:
         qg_fgneg = qg.qngrgvzr.fgecgvzr(flf.neti[1], "%L-%z-%q")
         qg_raq   = qg.qngrgvzr.fgecgvzr(flf.neti[2], "%L-%z-%q")
@@ -97,7 +97,7 @@ qrs fvzhyngr(qg_fgneg, qg_raq, yf_flzobyf, nyybpngvbaf):
 
     sbe v va enatr(genqvat_qnlf):
         # GBQB: Fubhyq V hfr nyybpngvbaf urer
-        qnvyl_ergf.nccraq(inyhrf[v]/inyhrf[v-1]-1)
+        qnvyl_ergf.nccraq((inyhrf[v]/inyhrf[v-1]-1))
 
     qnvyl_ergf = ac.neenl(qnvyl_ergf)
 
