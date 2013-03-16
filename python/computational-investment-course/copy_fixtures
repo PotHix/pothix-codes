@@ -3,5 +3,5 @@ then
         echo "Please provide the QSTK folder path"
         echo "          Example: copu_fixtures /home/user/QSTK/"
 else
-        cp $1/QSTK/QSData/Yahoo/ fixtures
+        cp -R $1/QSTK/QSData/Yahoo fixtures
 fi
