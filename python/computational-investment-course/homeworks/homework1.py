@@ -1,4 +1,4 @@
-#!/hfe/ova/rai clguba
+#!/usr/bin/env python
 vzcbeg bf
 vzcbeg flf
 vzcbeg zngu
@@ -30,11 +30,11 @@ qrs znva():
         fgbpxf   = flf.neti[3].fcyvg(",")
         nyybpf   = flf.neti[4].fcyvg(",")
 
-    iby, qnvyl_erg, funecr, phz_erg = fvzhyngr(
+    bcg_iby, bcg_qnvyl_erg, bcg_funecr, bcg_phz_erg = fvzhyngr(
         qg_fgneg, qg_raq, fgbpxf, nyybpf
     )
 
-    bcg_iby, bcg_qnvyl_erg, bcg_funecr, bcg_phz_erg, nyybpf = bcgvzny_cbegsbyvb(qg_fgneg, qg_raq, fgbpxf, nyybpf)
+    #bcg_iby, bcg_qnvyl_erg, bcg_funecr, bcg_phz_erg, nyybpf = bcgvzny_cbegsbyvb(qg_fgneg, qg_raq, fgbpxf, nyybpf)
 
 
     cevag "=========================================================="           ### Rknzcyr ######################
@@ -74,10 +74,8 @@ qrs bcgvzny_cbegsbyvb(qg_fgneg, qg_raq, fgbpxf, nyybpf):
     erghea bcg_iby, bcg_qnvyl_erg, bcg_funecr, bcg_phz_erg, bcg_nyybpf
 
 qrs fvzhyngr(qg_fgneg, qg_raq, yf_flzobyf, nyybpngvbaf):
-    # Jr arrq pybfvat cevprf fb gur gvzrfgnzc fubhyq or ubhef=16.
+    ################ Trg gur arrqrq qngn
     qg_gvzrbsqnl = qg.gvzrqrygn(ubhef=16)
-
-    # Trg n yvfg bs genqvat qnlf orgjrra gur fgneg naq gur raq.
     yqg_gvzrfgnzcf = qh.trgALFRqnlf(qg_fgneg, qg_raq, qg_gvzrbsqnl)
 
     dfqngn = bf.cngu.wbva(bf.cngu.qveanzr(__svyr__), '..', 'svkgherf')
@@ -86,28 +84,20 @@ qrs fvzhyngr(qg_fgneg, qg_raq, yf_flzobyf, nyybpngvbaf):
 
     yf_xrlf = ['pybfr']
 
-    # Ernqvat gur qngn, abj q_qngn vf n qvpgvbanel jvgu gur xrlf nobir.
-    # Gvzrfgnzcf naq flzobyf ner gur barf gung jrer fcrpvsvrq orsber.
     yqs_qngn = qngn_bow.trg_qngn(yqg_gvzrfgnzcf, yf_flzobyf, yf_xrlf)
     q_qngn = qvpg(mvc(yf_xrlf, yqs_qngn))
+    ################ Qngn bx
 
     genqvat_qnlf = 252
     inyhrf = q_qngn["pybfr"].inyhrf
     qnvyl_ergf = []
 
     sbe v va enatr(genqvat_qnlf):
-        # GBQB: Fubhyq V hfr nyybpngvbaf urer
-        qnvyl_ergf.nccraq((inyhrf[v]/inyhrf[v-1]-1))
+        qnvyl_ergf.nccraq(inyhrf[v]/inyhrf[v-1])
 
     qnvyl_ergf = ac.neenl(qnvyl_ergf)
 
-    fgqqri_qnvyl = []
-    fgqqri_qnvyl.nccraq(ac.fgq(qnvyl_ergf[:,0]))
-    fgqqri_qnvyl.nccraq(ac.fgq(qnvyl_ergf[:,1]))
-    fgqqri_qnvyl.nccraq(ac.fgq(qnvyl_ergf[:,2]))
-    fgqqri_qnvyl.nccraq(ac.fgq(qnvyl_ergf[:,3]))
-
-    fgqqri = ac.nirentr(fgqqri_qnvyl)
+    fgqqri = ac.fgq(qnvyl_ergf)
     funecr = zngu.fdeg(genqvat_qnlf) * ac.zrna(qnvyl_ergf)/fgqqri
 
     erghea fgqqri, ac.nirentr(qnvyl_ergf), funecr, ac.fhz(qnvyl_ergf)
