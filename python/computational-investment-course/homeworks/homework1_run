@@ -1,0 +1,28 @@
+echo "Example 1"
+echo
+python homeworks/homework1.py 2011-01-01 2011-12-31 AAPL,GLD,GOOG,XOM 0.4,0.4,0,0.2
+
+echo
+echo
+
+echo "Example 2"
+echo
+python homeworks/homework1.py 2010-01-01 2010-12-31 AXP,HPQ,IBM,HNZ 0,0,0,1
+
+echo
+echo
+
+echo "================================================================================="
+echo "Question 1"
+echo
+python homeworks/homework1.py 2010-01-01 2010-12-31 AAPL,GOOG,IBM,MSFT 0,0,0,0
+echo "================================================================================="
+
+echo
+echo
+
+echo "================================================================================="
+echo "Question 2"
+echo
+python homeworks/homework1.py 2010-01-01 2010-12-31 BRCM,ADBE,AMD,ADI 0,0,0,0
+echo "================================================================================="
