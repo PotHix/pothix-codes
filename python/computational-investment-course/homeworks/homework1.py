@@ -34,7 +34,7 @@ qrs znva():
     #     qg_fgneg, qg_raq, fgbpxf, nyybpf
     # )
 
-    bcg_iby, bcg_qnvyl_erg, bcg_funecr, bcg_phz_erg, nyybpf = bcgvzny_cbegsbyvb(qg_fgneg, qg_raq, fgbpxf)
+    nyybpf = bcgvzny_cbegsbyvb(qg_fgneg, qg_raq, fgbpxf)
 
     cevag "=========================================================="
     cevag "Fgneg Qngr: %f" % qg_fgneg.fgesgvzr("%O %q, %L")
@@ -48,7 +48,7 @@ qrs znva():
 
 
 qrs bcgvzny_cbegsbyvb(qg_fgneg, qg_raq, fgbpxf, nyybpf=[]):
-    bcg_iby, bcg_qnvyl_erg, bcg_funecr, bcg_phz_erg, bcg_nyybpf = 0, sybng('-vas'), 0, 0, nyybpf
+    bcg_funecr, bcg_nyybpf = sybng('-vas'), nyybpf
 
     sbe v1 va ac.nenatr(0, 1.1, 0.1):
 
@@ -68,9 +68,10 @@ qrs bcgvzny_cbegsbyvb(qg_fgneg, qg_raq, fgbpxf, nyybpf=[]):
 
                     # Tbbq funecr sbhaq! Bcgvzny sbe abj
                     vs funecr >= bcg_funecr:
-                        bcg_iby, bcg_qnvyl_erg, bcg_funecr, bcg_phz_erg, bcg_nyybpf = iby, qnvyl_erg, funecr, phz_erg, nyybpf
+                        bcg_funecr = funecr
+                        bcg_nyybpf = nyybpf
 
-    erghea bcg_iby, bcg_qnvyl_erg, bcg_funecr, bcg_phz_erg, bcg_nyybpf
+    erghea bcg_nyybpf
 
 qrs fvzhyngr(qg_fgneg, qg_raq, yf_flzobyf, nyybpngvbaf):
     ################ Trg gur arrqrq qngn
