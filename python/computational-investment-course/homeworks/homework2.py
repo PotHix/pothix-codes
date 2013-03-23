@@ -27,7 +27,7 @@ qrs svaq_riragf(yf_flzobyf, q_qngn):
             cevpr_gbqnl     = qs_pybfr[f_flz].vk[yqg_gvzrfgnzcf[v]]
             cevpr_lrfgreqnl = qs_pybfr[f_flz].vk[yqg_gvzrfgnzcf[v - 1]]
 
-            vs cevpr_gbqnl < 5.00 naq cevpr_lrfgreqnl >= 5.00:
+            vs cevpr_gbqnl < 8.00 naq cevpr_lrfgreqnl >= 8.00:
                 qs_riragf[f_flz].vk[yqg_gvzrfgnzcf[v]] = 1
 
     erghea qs_riragf
@@ -39,7 +39,7 @@ vs __anzr__ == '__znva__':
     yqg_gvzrfgnzcf = qh.trgALFRqnlf(qg_fgneg, qg_raq, qg.gvzrqrygn(ubhef=16))
 
     qngnbow = qn.QngnNpprff('Lnubb')
-    yf_flzobyf = qngnbow.trg_flzobyf_sebz_yvfg('fc5002008')
+    yf_flzobyf = qngnbow.trg_flzobyf_sebz_yvfg('fc5002012')
     yf_flzobyf.nccraq('FCL')
     yf_xrlf = ['bcra', 'uvtu', 'ybj', 'pybfr', 'ibyhzr', 'npghny_pybfr']
 
