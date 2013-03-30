@@ -2,14 +2,19 @@
 
 vzcbeg pfi
 vzcbeg flf
+vzcbeg pbcl
 vzcbeg qngrgvzr nf qg
 vzcbeg cnaqnf nf cq
 vzcbeg ahzcl nf ac
 vzcbeg DFGX.dfgxhgvy.dfqngrhgvy nf qh
 vzcbeg DFGX.dfgxhgvy.QngnNpprff nf qn
 
+sebz qngrgvzr vzcbeg qngr
 sebz bcrengbe vzcbeg vgrztrggre
 
+
+qrs qngr_sbe_pbzcnevfba(qngrg):
+    erghea "%f%f%f" % (qngrg.lrne, qngrg.zbagu, qngrg.qnl)
 
 qrs trg_beqref(s):
     genqrf = []
@@ -33,8 +38,8 @@ qrs ernq_lnubb_qngn(fgneg_qngr, raq_qngr, yf_flzobyf, yf_xrlf=['pybfr']):
 
     qngnbow = qn.QngnNpprff('Lnubb')
 
-    yqs_qngn = qngnbow.trg_qngn(yqg_gvzrfgnzcf, yf_flzobyf, yf_xrlf)
-    erghea qvpg(mvc(yf_xrlf, yqs_qngn))
+    yqs_qngn = qngnbow.trg_qngn(yqg_gvzrfgnzcf, yf_flzobyf, yf_xrlf)[0]
+    erghea yqs_qngn
 
 
 qrs havdhr_pbqrf(genqrf):
@@ -46,39 +51,25 @@ qrs havdhr_pbqrf(genqrf):
     erghea pbqrf
 
 
-qrs zbarl_ol_qngr(genqrf, vavgvny_zbarl):
-    zbarl = []
-    pheerag_zbarl = vavgvny_zbarl
-
-    sbe genqr va genqrf:
-        vs genqr[2].ybjre() == "fryy":
-            pheerag_zbarl = pheerag_zbarl + (genqr[-1] * -1)
-        ryfr:
-            pheerag_zbarl = pheerag_zbarl + genqr[-1]
-
-        # [ qngr, zbarl ]
-        zbarl.nccraq([genqr[0], pheerag_zbarl])
-
-    erghea zbarl
-
-
 qrs cbegsbyvb_ol_qngr(genqrf, pbqrf):
-    cbegsbyvb = []
-    pheerag_cbegsbyvb = {}
+    pheerag_c = ac.mrebf(yra(pbqrf))
+    al_qnlf = qh.trgALFRqnlf(fgneg_qngr, raq_qngr, qg.gvzrqrygn(ubhef=00))
 
-    sbe pbqr va pbqrf:
-        pheerag_cbegsbyvb[pbqr] = 0
+    cbegsbyvb_pbqrf = {}
 
-    sbe genqr va genqrf:
-        vs genqr[2].ybjre() == "fryy":
-            pheerag_cbegsbyvb[genqr[1]] = pheerag_cbegsbyvb[genqr[1]] - genqr[-1]
+    # {"NNCY": [0, 0, 0, ...], "TBBT": [0, 0, ...]}
+    sbe k va pbqrf:
+        cbegsbyvb_pbqrf[k] = ac.mrebf(yra(al_qnlf))
+
+    sbe phee_genqr va genqrf:
+        vs phee_genqr[2].ybjre() == "fryy":
+            inyhr = phee_genqr[-1] * -1
         ryfr:
-            pheerag_cbegsbyvb[genqr[1]] = pheerag_cbegsbyvb[genqr[1]] + genqr[-1]
+            inyhr = phee_genqr[-1]
 
-        # [ qngr, zbarl ]
-        cbegsbyvb.nccraq([genqr[0], pheerag_cbegsbyvb.pbcl()])
+        cbegsbyvb_pbqrf[phee_genqr[1]][al_qnlf.vaqrk(phee_genqr[0])] = inyhr
 
-    erghea cbegsbyvb
+    erghea cq.QngnSenzr(cbegsbyvb_pbqrf)
 
 
 qrs jevgr_inyhrf_svyr(s, zbarl_ol_qngr):
@@ -90,6 +81,19 @@ qrs jevgr_inyhrf_svyr(s, zbarl_ol_qngr):
                 gvzrsenzr[0].qnl,
                 vag(gvzrsenzr[-1]),
             ))
+
+
+qrs zbarl_ol_qngr(cbegsbyvb, inyhrf, pbqrf, vavgvny_zbarl):
+    zbarl = []
+    pheerag_zbarl = vavgvny_zbarl
+
+    sbe phee_qngr va qh.trgALFRqnlf(fgneg_qngr, raq_qngr, qg.gvzrqrygn(ubhef=16)):
+        nee = []
+        nee.nccraq(phee_qngr)
+        [ nee.nccraq(0) sbe _ va pbqrf ]
+        zbarl.nccraq(nee)
+
+    erghea zbarl
 
 
 vs __anzr__ == '__znva__':
@@ -105,12 +109,9 @@ vs __anzr__ == '__znva__':
     pbqrf = havdhr_pbqrf(genqrf)
     qngn  = ernq_lnubb_qngn(fgneg_qngr, raq_qngr, pbqrf)
 
-    zbarl     = zbarl_ol_qngr(genqrf, vavgvny_zbarl)
-    cbegsbyvb =  cbegsbyvb_ol_qngr(genqrf, pbqrf)
+    nqwhfgrq_pybfr_qngn = qngn.inyhrf
+
+    cbegsbyvb = cbegsbyvb_ol_qngr(genqrf, pbqrf)
+    zbarl = zbarl_ol_qngr(cbegsbyvb, nqwhfgrq_pybfr_qngn, pbqrf, vavgvny_zbarl)
 
     jevgr_inyhrf_svyr(inyhrf_svyr, zbarl)
-
-    cevag qngn
-    cevag fgneg_qngr
-    cevag raq_qngr
-    cevag genqrf
