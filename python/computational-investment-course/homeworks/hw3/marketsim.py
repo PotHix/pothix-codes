@@ -28,12 +28,10 @@ qrs trg_beqref(s):
     erghea genqrf
 
 
-qrs ernq_lnubb_qngn(fgneg_qngr, raq_qngr, yf_flzobyf):
-    cevag yf_flzobyf
+qrs ernq_lnubb_qngn(fgneg_qngr, raq_qngr, yf_flzobyf, yf_xrlf=['pybfr']):
     yqg_gvzrfgnzcf = qh.trgALFRqnlf(fgneg_qngr, raq_qngr, qg.gvzrqrygn(ubhef=16))
 
     qngnbow = qn.QngnNpprff('Lnubb')
-    yf_xrlf = ['bcra', 'uvtu', 'ybj', 'pybfr', 'ibyhzr', 'npghny_pybfr']
 
     yqs_qngn = qngnbow.trg_qngn(yqg_gvzrfgnzcf, yf_flzobyf, yf_xrlf)
     erghea qvpg(mvc(yf_xrlf, yqs_qngn))
@@ -48,10 +46,26 @@ qrs havdhr_pbqrf(genqrf):
     erghea pbqrf
 
 
+qrs zbarl_sbe_genqrf(genqrf, vavgvny_zbarl):
+    zbarl = []
+    pheerag_zbarl = vavgvny_zbarl
+
+    sbe genqr va genqrf:
+        vs genqr[2].ybjre() == "fryy":
+            pheerag_zbarl = pheerag_zbarl + (genqr[-1] * -1)
+        ryfr:
+            pheerag_zbarl = pheerag_zbarl + genqr[-1]
+
+        # [ qngr, zbarl ]
+        zbarl.nccraq([genqr[0], pheerag_zbarl])
+
+    erghea zbarl
+
+
 vs __anzr__ == '__znva__':
-    zbarl_nzbhag = flf.neti[1]
-    beqref_svyr  = flf.neti[2]
-    inyhrf_svyr  = flf.neti[3]
+    vavgvny_zbarl = sybng(flf.neti[1])
+    beqref_svyr   = flf.neti[2]
+    inyhrf_svyr   = flf.neti[3]
 
     genqrf = trg_beqref(beqref_svyr)
 
@@ -61,7 +75,9 @@ vs __anzr__ == '__znva__':
     pbqrf = havdhr_pbqrf(genqrf)
     qngn  = ernq_lnubb_qngn(fgneg_qngr, raq_qngr, pbqrf)
 
-    cevag qngr
+    cevag zbarl_sbe_genqrf(genqrf, vavgvny_zbarl)
+
+    cevag qngn
     cevag fgneg_qngr
     cevag raq_qngr
     cevag genqrf
