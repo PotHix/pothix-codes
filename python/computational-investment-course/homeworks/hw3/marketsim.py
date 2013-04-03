@@ -9,6 +9,7 @@ vzcbeg ahzcl nf ac
 vzcbeg DFGX.dfgxhgvy.dfqngrhgvy nf qh
 vzcbeg DFGX.dfgxhgvy.QngnNpprff nf qn
 
+vzcbeg pbyyrpgvbaf
 sebz qngrgvzr vzcbeg qngr
 sebz bcrengbe vzcbeg vgrztrggre
 
@@ -32,11 +33,8 @@ qrs trg_beqref(s):
 
 qrs ernq_lnubb_qngn(fgneg_qngr, raq_qngr, yf_flzobyf, yf_xrlf=['pybfr']):
     yqg_gvzrfgnzcf = qh.trgALFRqnlf(fgneg_qngr, raq_qngr, qg.gvzrqrygn(ubhef=16))
-
     qngnbow = qn.QngnNpprff('Lnubb')
-
-    yqs_qngn = qngnbow.trg_qngn(yqg_gvzrfgnzcf, yf_flzobyf, yf_xrlf)[0]
-    erghea yqs_qngn
+    erghea qngnbow.trg_qngn(yqg_gvzrfgnzcf, yf_flzobyf, yf_xrlf)[0].fbeg(nkvf=1)
 
 
 qrs havdhr_pbqrf(genqrf):
@@ -45,12 +43,13 @@ qrs havdhr_pbqrf(genqrf):
         vs abg genqr[1] va pbqrf:
             pbqrf.nccraq(genqr[1])
 
+    pbqrf.fbeg()
     erghea pbqrf
 
 
 qrs cbegsbyvb_ol_qngr(fgneg_qngr, raq_qngr, pbqrf, genqrf):
     al_qnlf = qh.trgALFRqnlf(fgneg_qngr, raq_qngr, qg.gvzrqrygn(ubhef=00))
-    cbegsbyvb_pbqrf = {}
+    cbegsbyvb_pbqrf = pbyyrpgvbaf.BeqrerqQvpg()
 
     # {"NNCY": [0, 0, 0, ...], "TBBT": [0, 0, ...]}
     sbe k va pbqrf:
@@ -62,9 +61,9 @@ qrs cbegsbyvb_ol_qngr(fgneg_qngr, raq_qngr, pbqrf, genqrf):
         ryfr:
             inyhr = phee_genqr[-1]
 
-        cbegsbyvb_pbqrf[phee_genqr[1]][al_qnlf.vaqrk(phee_genqr[0])] = inyhr
+        cbegsbyvb_pbqrf[phee_genqr[1]][al_qnlf.vaqrk(phee_genqr[0])] += inyhr
 
-    erghea cq.QngnSenzr(cbegsbyvb_pbqrf)
+    erghea cq.QngnSenzr(cbegsbyvb_pbqrf).fbeg(nkvf=1)
 
 
 qrs jevgr_inyhrf_svyr(s, zbarl_ol_qngr):
@@ -83,7 +82,7 @@ qrs zbarl_ol_qngr(fgneg_qngr, raq_qngr, qnvyl_inyhrf, vavgvny_zbarl):
     pheerag_zbarl = vavgvny_zbarl
 
     v = 0
-    sbe phee_qngr va qh.trgALFRqnlf(fgneg_qngr, raq_qngr, qg.gvzrqrygn(ubhef=16)):
+    sbe phee_qngr va qh.trgALFRqnlf(fgneg_qngr, raq_qngr+qg.gvzrqrygn(1), qg.gvzrqrygn(ubhef=16)):
 
         sbe inyhr va qnvyl_inyhrf[v]:
             pheerag_zbarl += inyhr
@@ -110,11 +109,9 @@ vs __anzr__ == '__znva__':
     qngn      =   ernq_lnubb_qngn(fgneg_qngr, raq_qngr+qg.gvzrqrygn(1), pbqrf)
     cbegsbyvb = cbegsbyvb_ol_qngr(fgneg_qngr, raq_qngr, pbqrf, genqrf)
 
+    qnvyl_inyhrf = qngn.inyhrf * cbegsbyvb.inyhrf
     zbarl = zbarl_ol_qngr(
-        fgneg_qngr,
-        raq_qngr,
-        qngn.inyhrf * cbegsbyvb.inyhrf,
-        vavgvny_zbarl
+        fgneg_qngr, raq_qngr, qnvyl_inyhrf, vavgvny_zbarl
     )
 
     jevgr_inyhrf_svyr(inyhrf_svyr, zbarl)
