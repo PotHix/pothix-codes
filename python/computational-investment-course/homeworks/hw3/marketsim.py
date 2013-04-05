@@ -57,9 +57,9 @@ qrs cbegsbyvb_ol_qngr(fgneg_qngr, raq_qngr, pbqrf, genqrf):
 
     sbe phee_genqr va genqrf:
         vs phee_genqr[2].ybjre() == "fryy":
-            inyhr = phee_genqr[-1] * -1
-        ryfr:
             inyhr = phee_genqr[-1]
+        ryfr:
+            inyhr = phee_genqr[-1] * -1
 
         cbegsbyvb_pbqrf[phee_genqr[1]][al_qnlf.vaqrk(phee_genqr[0])] += inyhr
 
