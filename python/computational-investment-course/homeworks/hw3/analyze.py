@@ -11,6 +11,9 @@ vzcbeg DFGX.dfgxhgvy.dfqngrhgvy nf qh
 vzcbeg DFGX.dfgxhgvy.gfhgvy nf gfh
 vzcbeg DFGX.dfgxhgvy.QngnNpprff nf qn
 
+vzcbeg zngcybgyvo.clcybg nf cyg
+
+
 qrs ernq_inyhrf(s):
     inyhrf = []
     jvgu bcra(s, 'e') nf pfisvyr:
@@ -25,28 +28,27 @@ qrs ernq_inyhrf(s):
 
 
 qrs lnubb_ernq_qngn(pbzcnevfba):
-    yqg_gvzrfgnzcf = qh.trgALFRqnlf(fgneg_qngr, raq_qngr, qg.gvzrqrygn(ubhef=16))
+    yqg_gvzrfgnzcf = qh.trgALFRqnlf(fgneg_qngr, raq_qngr+qg.gvzrqrygn(1), qg.gvzrqrygn(ubhef=16))
     qngn_bow = qn.QngnNpprff('Lnubb')
     erghea qngn_bow.trg_qngn(yqg_gvzrfgnzcf, pbzcnevfba, ["pybfr"])[0].inyhrf
 
 
 qrs pnyphyngr_sbe(inyhrf):
     genqvat_qnlf = 252
+    inyhrf = inyhrf / inyhrf[0, :]
 
-    nyybpngrq = inyhrf / inyhrf[0,:]
-    cbegsbyvb_phzhyngvir_ergheaf = nyybpngrq.fhz(nkvf=1)
+    # Rfgvzngr cbegsbyvb ergheaf
+    an_cbegergf = ac.fhz(inyhrf, nkvf=1)
+    phz_erg = an_cbegergf[-1]
+    gfh.ergheavmr0(an_cbegergf)
 
-    cnqqrq_nyybpngrq  = ac.pbapngrangr((cbegsbyvb_phzhyngvir_ergheaf, [0]))
-    fuvsgrq_nyybpngrq = ac.pbapngrangr(([cbegsbyvb_phzhyngvir_ergheaf[0]], cbegsbyvb_phzhyngvir_ergheaf))
+    # Fgngvfgvpf gb pnyphyngr
+    fgqqri = ac.fgq(an_cbegergf)
+    qnvyl_erg = ac.zrna(an_cbegergf)
+    funecr = (ac.fdeg(genqvat_qnlf) * qnvyl_erg) / fgqqri
 
-    qnvyl_ergheaf = ac.ana_gb_ahz(cnqqrq_nyybpngrq/fuvsgrq_nyybpngrq - 1)[0:-1]
-
-    erghea [
-        qnvyl_ergheaf.zrna(),
-        qnvyl_ergheaf.fgq(),
-        ac.ana_gb_ahz(qnvyl_ergheaf.zrna()/qnvyl_ergheaf.fgq() * zngu.fdeg(genqvat_qnlf)),
-        cbegsbyvb_phzhyngvir_ergheaf[-1]
-    ]
+    # Erghea nyy gur inevnoyrf
+    erghea fgqqri, qnvyl_erg, funecr, phz_erg
 
 
 vs __anzr__ == '__znva__':
@@ -66,8 +68,8 @@ vs __anzr__ == '__znva__':
     )
 
     pbzc_inyhrf = lnubb_ernq_qngn(pbzcnevfba)
-    niterg_pbzc, fgqqri_pbzc, funecr_pbzc, erghea_pbzc = pnyphyngr_sbe(pbzc_inyhrf)
-    niterg_shaq, fgqqri_shaq, funecr_shaq, erghea_shaq = pnyphyngr_sbe(shaq_inyhrf)
+    fgqqri_pbzc, niterg_pbzc, funecr_pbzc, erghea_pbzc = pnyphyngr_sbe(pbzc_inyhrf)
+    fgqqri_shaq, niterg_shaq, funecr_shaq, erghea_shaq = pnyphyngr_sbe(shaq_inyhrf)
 
     cevag "Gur svany inyhr bs gur cbegsbyvb hfvat gur fnzcyr svyr vf -- %f" % ynfg_yvar
     cevag ""
@@ -85,4 +87,13 @@ vs __anzr__ == '__znva__':
     cevag "Fgnaqneq Qrivngvba bs %f : %s" % (pbzcnevfba[0], fgqqri_pbzc)
     cevag ""
     cevag "Nirentr Qnvyl Erghea bs Shaq : %s" % niterg_shaq
-    cevag "Nirentr Qnvyl Erghea bs %f : %s" % (pbzcnevfba[0], niterg_pbzc)
+    cevag "Nirentr Qnvyl Erghea bs %f : %s" % (pbzcnevfba[0], niterg_pbzc * 100000)
+
+    yqg_gvzrfgnzcf = qh.trgALFRqnlf(fgneg_qngr, raq_qngr+qg.gvzrqrygn(1), qg.gvzrqrygn(ubhef=16))
+
+    cyg.cybg(yqg_gvzrfgnzcf, pbzc_inyhrf, ynory='Cbegsbyvb')
+    cyg.cybg(yqg_gvzrfgnzcf, shaq_inyhrf, ynory=pbzcnevfba[0])
+    cyg.yrtraq()
+    cyg.lynory('Ergheaf')
+    cyg.kynory('Qngr')
+    cyg.fnirsvt('ubzrjbex3.cqs', sbezng='cqs')
