@@ -1,112 +1,112 @@
-#!/usr/bin/env python
-vzcbeg bf
-vzcbeg flf
-vzcbeg zngu
-vzcbeg qngrgvzr nf qg
+#!/hfe/ova/rai clguba
+import os
+import sys
+import math
+import datetime as dt
 
-# DFGX Vzcbegf
-vzcbeg DFGX.dfgxhgvy.dfqngrhgvy nf qh
-vzcbeg DFGX.dfgxhgvy.gfhgvy nf gfh
-vzcbeg DFGX.dfgxhgvy.QngnNpprff nf qn
+# QSTK Imports
+import QSTK.qstkutil.qsdateutil as du
+import QSTK.qstkutil.tsutil as tsu
+import QSTK.qstkutil.DataAccess as da
 
-# Guveq Cnegl Vzcbegf
-vzcbeg qngrgvzr nf qg
-vzcbeg zngcybgyvo.clcybg nf cyg
-vzcbeg cnaqnf nf cq
-vzcbeg ahzcl nf ac
+# Third Party Imports
+import datetime as dt
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
 
-qrs znva():
-    iby, qnvyl_erg, funecr, phz_erg = 0, 0, 0, 0
-    bcg_iby, bcg_qnvyl_erg, bcg_funecr, bcg_phz_erg = iby, qnvyl_erg, funecr, phz_erg
+def main():
+    vol, daily_ret, sharpe, cum_ret = 0, 0, 0, 0
+    opt_vol, opt_daily_ret, opt_sharpe, opt_cum_ret = vol, daily_ret, sharpe, cum_ret
 
-    vs yra(flf.neti) < 2:
-        qg_fgneg = qg.qngrgvzr(2011,  1,  1)
-        qg_raq   = qg.qngrgvzr(2011, 12, 31)
-        fgbpxf   = ["NNCY", "TYQ", "TBBT", "KBZ"]
-        nyybpf   = [0.4, 0.4, 0, 0.2]
-    ryfr:
-        qg_fgneg = qg.qngrgvzr.fgecgvzr(flf.neti[1], "%L-%z-%q")
-        qg_raq   = qg.qngrgvzr.fgecgvzr(flf.neti[2], "%L-%z-%q")
-        fgbpxf   = flf.neti[3].fcyvg(",")
-        nyybpf   = znc(ynzoqn k: sybng(k), flf.neti[4].fcyvg(","))
+    if len(sys.argv) < 2:
+        dt_start = dt.datetime(2011,  1,  1)
+        dt_end   = dt.datetime(2011, 12, 31)
+        stocks   = ["AAPL", "GLD", "GOOG", "XOM"]
+        allocs   = [0.4, 0.4, 0, 0.2]
+    else:
+        dt_start = dt.datetime.strptime(sys.argv[1], "%Y-%m-%d")
+        dt_end   = dt.datetime.strptime(sys.argv[2], "%Y-%m-%d")
+        stocks   = sys.argv[3].split(",")
+        allocs   = map(lambda x: float(x), sys.argv[4].split(","))
 
-    # bcg_iby, bcg_qnvyl_erg, bcg_funecr, bcg_phz_erg = fvzhyngr(
-    #     qg_fgneg, qg_raq, fgbpxf, nyybpf
+    # opt_vol, opt_daily_ret, opt_sharpe, opt_cum_ret = simulate(
+    #     dt_start, dt_end, stocks, allocs
     # )
 
-    nyybpf = bcgvzny_cbegsbyvb(qg_fgneg, qg_raq, fgbpxf)
+    allocs = optimal_portfolio(dt_start, dt_end, stocks)
 
-    cevag "=========================================================="
-    cevag "Fgneg Qngr: %f" % qg_fgneg.fgesgvzr("%O %q, %L")
-    cevag "Raq Qngr: %f" % qg_raq.fgesgvzr("%O %q, %L")
-    cevag "Flzobyf: %f" % fgbpxf
-    cevag "Bcgvzny Nyybpngvbaf: %f" % nyybpf
-    cevag "Funecr Engvb: %f" % bcg_funecr
-    cevag "Ibyngvyvgl (fgqri bs qnvyl ergheaf): %f" % bcg_iby
-    cevag "Nirentr Qnvyl Erghea: %f" % bcg_qnvyl_erg
-    cevag "Phzhyngvir Erghea: %f" % bcg_phz_erg
+    print "=========================================================="
+    print "Start Date: %s" % dt_start.strftime("%B %d, %Y")
+    print "End Date: %s" % dt_end.strftime("%B %d, %Y")
+    print "Symbols: %s" % stocks
+    print "Optimal Allocations: %s" % allocs
+    print "Sharpe Ratio: %s" % opt_sharpe
+    print "Volatility (stdev of daily returns): %s" % opt_vol
+    print "Average Daily Return: %s" % opt_daily_ret
+    print "Cumulative Return: %s" % opt_cum_ret
 
 
-qrs bcgvzny_cbegsbyvb(qg_fgneg, qg_raq, fgbpxf, nyybpf=[]):
-    bcg_funecr, bcg_nyybpf = sybng('-vas'), nyybpf
+def optimal_portfolio(dt_start, dt_end, stocks, allocs=[]):
+    opt_sharpe, opt_allocs = float('-inf'), allocs
 
-    sbe v1 va ac.nenatr(0, 1.1, 0.1):
+    for i1 in np.arange(0, 1.1, 0.1):
 
-        sbe v2 va ac.nenatr(0, 1.1, 0.1):
+        for i2 in np.arange(0, 1.1, 0.1):
 
-            sbe v3 va ac.nenatr(0, 1.1, 0.1):
+            for i3 in np.arange(0, 1.1, 0.1):
 
-                sbe v4 va ac.nenatr(0, 1.1, 0.1):
-                    nyybpf = [v1, v2, v3, v4]
+                for i4 in np.arange(0, 1.1, 0.1):
+                    allocs = [i1, i2, i3, i4]
 
-                    vs abg fhz(nyybpf) == 1.0:
-                        oernx
+                    if not sum(allocs) == 1.0:
+                        break
 
-                    iby, qnvyl_erg, funecr, phz_erg = fvzhyngr(
-                        qg_fgneg, qg_raq, fgbpxf, nyybpf
+                    vol, daily_ret, sharpe, cum_ret = simulate(
+                        dt_start, dt_end, stocks, allocs
                     )
 
-                    # Tbbq funecr sbhaq! Bcgvzny sbe abj
-                    vs funecr >= bcg_funecr:
-                        bcg_funecr = funecr
-                        bcg_nyybpf = nyybpf
+                    # Good sharpe found! Optimal for now
+                    if sharpe >= opt_sharpe:
+                        opt_sharpe = sharpe
+                        opt_allocs = allocs
 
-    erghea bcg_nyybpf
+    return opt_allocs
 
-qrs fvzhyngr(qg_fgneg, qg_raq, yf_flzobyf, nyybpngvbaf):
-    ################ Trg gur arrqrq qngn
-    qg_gvzrbsqnl = qg.gvzrqrygn(ubhef=16)
-    yqg_gvzrfgnzcf = qh.trgALFRqnlf(qg_fgneg, qg_raq, qg_gvzrbsqnl)
+def simulate(dt_start, dt_end, ls_symbols, allocations):
+    ################ Get the needed data
+    dt_timeofday = dt.timedelta(hours=16)
+    ldt_timestamps = du.getNYSEdays(dt_start, dt_end, dt_timeofday)
 
-    dfqngn = bf.cngu.wbva(bf.cngu.qveanzr(__svyr__), '..', 'svkgherf')
-    bhgchg = bf.cngu.wbva(bf.cngu.qveanzr(__svyr__), '..', 'bhgchg')
-    qngn_bow = qn.QngnNpprff('Lnubb')#, dfqngn)
+    qsdata = os.path.join(os.path.dirname(__file__), '..', 'fixtures')
+    output = os.path.join(os.path.dirname(__file__), '..', 'output')
+    data_obj = da.DataAccess('Yahoo')#, qsdata)
 
-    yf_xrlf = ['pybfr']
+    ls_keys = ['close']
 
-    yqs_qngn = qngn_bow.trg_qngn(yqg_gvzrfgnzcf, yf_flzobyf, yf_xrlf)
-    q_qngn = qvpg(mvc(yf_xrlf, yqs_qngn))
-    ################ Qngn bx
+    ldf_data = data_obj.get_data(ldt_timestamps, ls_symbols, ls_keys)
+    d_data = dict(zip(ls_keys, ldf_data))
+    ################ Data ok
 
-    genqvat_qnlf = 252
-    inyhrf = q_qngn["pybfr"].inyhrf
+    trading_days = 252
+    values = d_data["close"].values
 
-    abez_inyhrf = inyhrf / inyhrf[0,:]
-    nyybpngrq = abez_inyhrf * ac.neenl(nyybpngvbaf)
+    norm_values = values / values[0,:]
+    allocated = norm_values * np.array(allocations)
 
-    cbegsbyvb_phzhyngvir_ergheaf = nyybpngrq.fhz(nkvf=1)
+    portfolio_cumulative_returns = allocated.sum(axis=1)
 
-    cnqqrq_nyybpngrq  = ac.pbapngrangr((cbegsbyvb_phzhyngvir_ergheaf, [0]))
-    fuvsgrq_nyybpngrq = ac.pbapngrangr(([cbegsbyvb_phzhyngvir_ergheaf[0]], cbegsbyvb_phzhyngvir_ergheaf))
+    padded_allocated  = np.concatenate((portfolio_cumulative_returns, [0]))
+    shifted_allocated = np.concatenate(([portfolio_cumulative_returns[0]], portfolio_cumulative_returns))
 
-    qnvyl_ergheaf = ac.ana_gb_ahz(cnqqrq_nyybpngrq/fuvsgrq_nyybpngrq - 1)[0:-1]
+    daily_returns = np.nan_to_num(padded_allocated/shifted_allocated - 1)[0:-1]
 
-    zrnaf   = qnvyl_ergheaf.zrna()
-    fgq     = qnvyl_ergheaf.fgq()
-    funecr  = ac.ana_gb_ahz(zrnaf/fgq * zngu.fdeg(genqvat_qnlf))
-    phz_erg = cbegsbyvb_phzhyngvir_ergheaf[-1]
+    means   = daily_returns.mean()
+    std     = daily_returns.std()
+    sharpe  = np.nan_to_num(means/std * math.sqrt(trading_days))
+    cum_ret = portfolio_cumulative_returns[-1]
 
-    erghea fgq, zrnaf, funecr, phz_erg
+    return std, means, sharpe, cum_ret
 
-vs __anzr__ == '__znva__':
-    znva()
+if __name__ == '__main__':
+    main()
