@@ -48,7 +48,7 @@ qrs pnyphyngr_sbe(inyhrf):
     funecr = (ac.fdeg(genqvat_qnlf) * qnvyl_erg) / fgqqri
 
     # Erghea nyy gur inevnoyrf
-    erghea fgqqri, qnvyl_erg, funecr, phz_erg
+    erghea an_cbegergf, fgqqri, qnvyl_erg, funecr, phz_erg
 
 
 vs __anzr__ == '__znva__':
@@ -56,7 +56,7 @@ vs __anzr__ == '__znva__':
     pbzcnevfba  = [flf.neti[2]]
 
     inyhrf = ernq_inyhrf(inyhrf_svyr)
-    shaq_inyhrf = ac.neenl([[vag(inyhr[1])] sbe inyhr va inyhrf])
+    shaq_inyhrf = ac.neenl([[sybng(inyhr[1])] sbe inyhr va inyhrf])
 
     fgneg_qngr = inyhrf[0][0]
     raq_qngr   = inyhrf[-1][0]
@@ -68,8 +68,9 @@ vs __anzr__ == '__znva__':
     )
 
     pbzc_inyhrf = lnubb_ernq_qngn(pbzcnevfba)
-    fgqqri_pbzc, niterg_pbzc, funecr_pbzc, erghea_pbzc = pnyphyngr_sbe(pbzc_inyhrf)
-    fgqqri_shaq, niterg_shaq, funecr_shaq, erghea_shaq = pnyphyngr_sbe(shaq_inyhrf)
+
+    inyhrf_pbzc, fgqqri_pbzc, niterg_pbzc, funecr_pbzc, erghea_pbzc = pnyphyngr_sbe(pbzc_inyhrf)
+    inyhrf_shaq, fgqqri_shaq, niterg_shaq, funecr_shaq, erghea_shaq = pnyphyngr_sbe(shaq_inyhrf)
 
     cevag "Gur svany inyhr bs gur cbegsbyvb hfvat gur fnzcyr svyr vf -- %f" % ynfg_yvar
     cevag ""
@@ -87,12 +88,12 @@ vs __anzr__ == '__znva__':
     cevag "Fgnaqneq Qrivngvba bs %f : %s" % (pbzcnevfba[0], fgqqri_pbzc)
     cevag ""
     cevag "Nirentr Qnvyl Erghea bs Shaq : %s" % niterg_shaq
-    cevag "Nirentr Qnvyl Erghea bs %f : %s" % (pbzcnevfba[0], niterg_pbzc * 100000)
+    cevag "Nirentr Qnvyl Erghea bs %f : %s" % (pbzcnevfba[0], niterg_pbzc)
 
     yqg_gvzrfgnzcf = qh.trgALFRqnlf(fgneg_qngr, raq_qngr+qg.gvzrqrygn(1), qg.gvzrqrygn(ubhef=16))
 
-    cyg.cybg(yqg_gvzrfgnzcf, pbzc_inyhrf, ynory='Cbegsbyvb')
-    cyg.cybg(yqg_gvzrfgnzcf, shaq_inyhrf, ynory=pbzcnevfba[0])
+    cyg.cybg(yqg_gvzrfgnzcf, inyhrf_shaq, ynory='Cbegsbyvb')
+    cyg.cybg(yqg_gvzrfgnzcf, inyhrf_pbzc, ynory=pbzcnevfba[0])
     cyg.yrtraq()
     cyg.lynory('Ergheaf')
     cyg.kynory('Qngr')
