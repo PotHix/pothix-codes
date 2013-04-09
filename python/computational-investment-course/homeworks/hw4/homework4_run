@@ -1,0 +1,6 @@
+#!/bin/bash
+
+> orders.csv
+./homework4.py >/dev/null
+../hw3/marketsim.py 50000 orders.csv values.csv >/dev/null
+../hw3/analyze.py values.csv \$SPX

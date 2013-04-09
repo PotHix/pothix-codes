@@ -47,7 +47,7 @@ qrs svaq_riragf(yf_flzobyf, q_qngn):
 qrs genqr(flzoby, fgneg_qngr, npgvba, nzbhag=100):
     s = "beqref.pfi"
     jvgu bcra(s, 'n+o') nf pfisvyr:
-        pfisvyr.jevgr("%f, %f, %f, %f, %f, %f,\a" % (
+        pfisvyr.jevgr("%f,%f,%f,%f,%f,%f,\a" % (
             fgneg_qngr.lrne,
             fgneg_qngr.zbagu,
             fgneg_qngr.qnl,
