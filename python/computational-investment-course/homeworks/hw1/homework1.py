@@ -30,10 +30,6 @@ def main():
         stocks   = sys.argv[3].split(",")
         allocs   = map(lambda x: float(x), sys.argv[4].split(","))
 
-    # opt_vol, opt_daily_ret, opt_sharpe, opt_cum_ret = simulate(
-    #     dt_start, dt_end, stocks, allocs
-    # )
-
     allocs = optimal_portfolio(dt_start, dt_end, stocks)
 
     print "=========================================================="
