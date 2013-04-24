@@ -1,147 +1,147 @@
-#!/hfe/ova/rai clguba
+#!/usr/bin/env python
 
-vzcbeg pfi
-vzcbeg flf
-vzcbeg pbcl
-vzcbeg qngrgvzr nf qg
-vzcbeg cnaqnf nf cq
-vzcbeg ahzcl nf ac
-vzcbeg DFGX.dfgxhgvy.dfqngrhgvy nf qh
-vzcbeg DFGX.dfgxhgvy.QngnNpprff nf qn
+import csv
+import sys
+import copy
+import datetime as dt
+import pandas as pd
+import numpy as np
+import QSTK.qstkutil.qsdateutil as du
+import QSTK.qstkutil.DataAccess as da
 
-vzcbeg pbyyrpgvbaf
-sebz qngrgvzr vzcbeg qngr
-sebz bcrengbe vzcbeg vgrztrggre
+import collections
+from datetime import date
+from operator import itemgetter
 
 
-qrs trg_beqref(s):
-    genqrf = []
-    jvgu bcra(s, 'e') nf pfisvyr:
-        pfipbagrag = pfi.ernqre(pfisvyr, dhbgrpune=',')
-        sbe v va pfipbagrag:
-            # [ qngr, pbqr, bcrengvba, inyhr ]
-            ebj = [
-                qg.qngrgvzr(vag(v[0]), vag(v[1]), vag(v[2])),
-                v[3], v[4], sybng(v[5])
+def get_orders(f):
+    trades = []
+    with open(f, 'r') as csvfile:
+        csvcontent = csv.reader(csvfile, quotechar=',')
+        for i in csvcontent:
+            # [ date, code, operation, value ]
+            row = [
+                dt.datetime(int(i[0]), int(i[1]), int(i[2])),
+                i[3], i[4], float(i[5])
             ]
-            genqrf.nccraq(ebj)
+            trades.append(row)
 
-    genqrf.fbeg(xrl=vgrztrggre(0))
+    trades.sort(key=itemgetter(0))
 
-    erghea genqrf
-
-
-qrs ernq_lnubb_qngn(fgneg_qngr, raq_qngr, yf_flzobyf, yf_xrlf=['pybfr']):
-    yqg_gvzrfgnzcf = qh.trgALFRqnlf(fgneg_qngr, raq_qngr, qg.gvzrqrygn(ubhef=16))
-    qngnbow = qn.QngnNpprff('Lnubb')
-    erghea qngnbow.trg_qngn(yqg_gvzrfgnzcf, yf_flzobyf, yf_xrlf)[0].fbeg(nkvf=1)
+    return trades
 
 
-qrs havdhr_pbqrf(genqrf):
-    pbqrf = []
-    sbe genqr va genqrf:
-        vs abg genqr[1] va pbqrf:
-            pbqrf.nccraq(genqr[1])
-
-    pbqrf.fbeg()
-    erghea pbqrf
+def read_yahoo_data(start_date, end_date, ls_symbols, ls_keys=['close']):
+    ldt_timestamps = du.getNYSEdays(start_date, end_date, dt.timedelta(hours=16))
+    dataobj = da.DataAccess('Yahoo')
+    return dataobj.get_data(ldt_timestamps, ls_symbols, ls_keys)[0].sort(axis=1)
 
 
-qrs cbegsbyvb_ol_qngr(fgneg_qngr, raq_qngr, pbqrf, genqrf):
-    al_qnlf = qh.trgALFRqnlf(fgneg_qngr, raq_qngr, qg.gvzrqrygn(ubhef=00))
-    cbegsbyvb_pbqrf = pbyyrpgvbaf.BeqrerqQvpg()
+def unique_codes(trades):
+    codes = []
+    for trade in trades:
+        if not trade[1] in codes:
+            codes.append(trade[1])
 
-    # {"NNCY": [0, 0, 0, ...], "TBBT": [0, 0, ...]}
-    sbe k va pbqrf:
-        cbegsbyvb_pbqrf[k] = ac.mrebf(yra(al_qnlf))
-
-    cbegsbyvb_genqrf = pbcl.qrrcpbcl(cbegsbyvb_pbqrf)
-
-    sbe phee_genqr va genqrf:
-        vs phee_genqr[2].ybjre() == "fryy":
-            inyhr = phee_genqr[-1]
-        ryfr:
-            inyhr = phee_genqr[-1] * -1
-
-        vaqrk = al_qnlf.vaqrk(phee_genqr[0])
-        fgbpx = phee_genqr[1]
-
-        cbegsbyvb_pbqrf[fgbpx][vaqrk] += inyhr
-
-        sbe v va enatr(vaqrk, yra(cbegsbyvb_genqrf[fgbpx])):
-            cbegsbyvb_genqrf[fgbpx][v] += inyhr
-
-    qs_cbegsbyvb = cq.QngnSenzr(cbegsbyvb_pbqrf).fbeg(nkvf=1)
-    qs_cgenqrf = cq.QngnSenzr(cbegsbyvb_genqrf).fbeg(nkvf=1)
-
-    erghea qs_cbegsbyvb, qs_cgenqrf
+    codes.sort()
+    return codes
 
 
-qrs jevgr_inyhrf_svyr(s, zbarl_ol_qngr):
-    jvgu bcra(s, 'j+') nf pfisvyr:
-        sbe gvzrsenzr va zbarl_ol_qngr:
-            pfisvyr.jevgr("%f, %f, %f, %f\a" % (
-                gvzrsenzr[0].lrne,
-                gvzrsenzr[0].zbagu,
-                gvzrsenzr[0].qnl,
-                vag(gvzrsenzr[-1]),
+def portfolio_by_date(start_date, end_date, codes, trades):
+    ny_days = du.getNYSEdays(start_date, end_date, dt.timedelta(hours=00))
+    portfolio_codes = collections.OrderedDict()
+
+    # {"AAPL": [0, 0, 0, ...], "GOOG": [0, 0, ...]}
+    for x in codes:
+        portfolio_codes[x] = np.zeros(len(ny_days))
+
+    portfolio_trades = copy.deepcopy(portfolio_codes)
+
+    for curr_trade in trades:
+        if curr_trade[2].lower() == "sell":
+            value = curr_trade[-1]
+        else:
+            value = curr_trade[-1] * -1
+
+        index = ny_days.index(curr_trade[0])
+        stock = curr_trade[1]
+
+        portfolio_codes[stock][index] += value
+
+        for i in range(index, len(portfolio_trades[stock])):
+            portfolio_trades[stock][i] += value
+
+    df_portfolio = pd.DataFrame(portfolio_codes).sort(axis=1)
+    df_ptrades = pd.DataFrame(portfolio_trades).sort(axis=1)
+
+    return df_portfolio, df_ptrades
+
+
+def write_values_file(f, money_by_date):
+    with open(f, 'w+') as csvfile:
+        for timeframe in money_by_date:
+            csvfile.write("%s, %s, %s, %s\n" % (
+                timeframe[0].year,
+                timeframe[0].month,
+                timeframe[0].day,
+                int(timeframe[-1]),
             ))
 
 
-qrs zbarl_ol_qngr(fgneg_qngr, raq_qngr, qnvyl_inyhrf, vavgvny_zbarl, nqq_qngr=Snyfr, phzhyngvir=Snyfr):
-    zbarl = []
-    pheerag_zbarl = vavgvny_zbarl
+def money_by_date(start_date, end_date, daily_values, initial_money, add_date=False, cumulative=False):
+    money = []
+    current_money = initial_money
 
-    v = 0
-    sbe phee_qngr va qh.trgALFRqnlf(fgneg_qngr, raq_qngr+qg.gvzrqrygn(1), qg.gvzrqrygn(ubhef=16)):
-        vs abg phzhyngvir:
-            pheerag_zbarl = 0
+    i = 0
+    for curr_date in du.getNYSEdays(start_date, end_date+dt.timedelta(1), dt.timedelta(hours=16)):
+        if not cumulative:
+            current_money = 0
 
-        sbe inyhr va qnvyl_inyhrf[v]:
-            pheerag_zbarl += inyhr
+        for value in daily_values[i]:
+            current_money += value
 
-        vs nqq_qngr:
-            zbarl.nccraq([phee_qngr, pheerag_zbarl])
-        ryfr:
-            zbarl.nccraq([pheerag_zbarl])
+        if add_date:
+            money.append([curr_date, current_money])
+        else:
+            money.append([current_money])
 
-        v += 1
+        i += 1
 
-    erghea ac.neenl(zbarl)
+    return np.array(money)
 
 
-qrs nqq_qngrf_gb(nel):
-    v = 0
-    zbarl = []
+def add_dates_to(ary):
+    i = 0
+    money = []
 
-    sbe phee_qngr va qh.trgALFRqnlf(fgneg_qngr, raq_qngr+qg.gvzrqrygn(1), qg.gvzrqrygn(ubhef=16)):
-        zbarl.nccraq([phee_qngr, nel[v]])
-        v+=1
+    for curr_date in du.getNYSEdays(start_date, end_date+dt.timedelta(1), dt.timedelta(hours=16)):
+        money.append([curr_date, ary[i]])
+        i+=1
 
-    erghea zbarl
+    return money
 
-vs __anzr__ == '__znva__':
-    vavgvny_zbarl = sybng(flf.neti[1])
-    beqref_svyr   = flf.neti[2]
-    inyhrf_svyr   = flf.neti[3]
+if __name__ == '__main__':
+    initial_money = float(sys.argv[1])
+    orders_file   = sys.argv[2]
+    values_file   = sys.argv[3]
 
-    genqrf = trg_beqref(beqref_svyr)
+    trades = get_orders(orders_file)
 
-    fgneg_qngr = genqrf[0][0]
-    raq_qngr   = genqrf[-1][0]
+    start_date = trades[0][0]
+    end_date   = trades[-1][0]
 
-    pbqrf = havdhr_pbqrf(genqrf)
+    codes = unique_codes(trades)
 
-    # Arrqrq gb pbafvqre 1 qnl zber gb npghnyyl hfr gur ynfg qngr...
-    qngn                        =   ernq_lnubb_qngn(fgneg_qngr, raq_qngr+qg.gvzrqrygn(1), pbqrf)
-    cbegsbyvb, cbegsbyvb_genqrf = cbegsbyvb_ol_qngr(fgneg_qngr, raq_qngr, pbqrf, genqrf)
+    # Needed to consider 1 day more to actually use the last date...
+    data                        =   read_yahoo_data(start_date, end_date+dt.timedelta(1), codes)
+    portfolio, portfolio_trades = portfolio_by_date(start_date, end_date, codes, trades)
 
-    qnvyl_inyhrf_p = qngn.inyhrf * cbegsbyvb.inyhrf
-    qnvyl_inyhrf_f = (cbegsbyvb_genqrf.inyhrf * -1) * qngn.inyhrf
+    daily_values_c = data.values * portfolio.values
+    daily_values_s = (portfolio_trades.values * -1) * data.values
 
-    zbarlp = zbarl_ol_qngr(fgneg_qngr, raq_qngr, qnvyl_inyhrf_p, vavgvny_zbarl, phzhyngvir=Gehr)
-    zbarlf = zbarl_ol_qngr(fgneg_qngr, raq_qngr, qnvyl_inyhrf_f, 0)
+    moneyc = money_by_date(start_date, end_date, daily_values_c, initial_money, cumulative=True)
+    moneys = money_by_date(start_date, end_date, daily_values_s, 0)
 
-    zbarl = nqq_qngrf_gb(zbarlp + zbarlf)
+    money = add_dates_to(moneyc + moneys)
 
-    jevgr_inyhrf_svyr(inyhrf_svyr, zbarl)
+    write_values_file(values_file, money)

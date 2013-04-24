@@ -1,100 +1,100 @@
-#!/hfe/ova/rai clguba
+#!/usr/bin/env python
 
-vzcbeg pfi
-vzcbeg flf
-vzcbeg zngu
-vzcbeg ahzcl nf ac
-vzcbeg qngrgvzr nf qg
+import csv
+import sys
+import math
+import numpy as np
+import datetime as dt
 
-# DFGX Vzcbegf
-vzcbeg DFGX.dfgxhgvy.dfqngrhgvy nf qh
-vzcbeg DFGX.dfgxhgvy.gfhgvy nf gfh
-vzcbeg DFGX.dfgxhgvy.QngnNpprff nf qn
+# QSTK Imports
+import QSTK.qstkutil.qsdateutil as du
+import QSTK.qstkutil.tsutil as tsu
+import QSTK.qstkutil.DataAccess as da
 
-vzcbeg zngcybgyvo.clcybg nf cyg
+import matplotlib.pyplot as plt
 
 
-qrs ernq_inyhrf(s):
-    inyhrf = []
-    jvgu bcra(s, 'e') nf pfisvyr:
-        pfipbagrag = pfi.ernqre(pfisvyr, dhbgrpune=',')
-        sbe v va pfipbagrag:
-            inyhrf.nccraq([
-                qg.qngrgvzr(vag(v[0]), vag(v[1]), vag(v[2])),
-                v[3]
+def read_values(f):
+    values = []
+    with open(f, 'r') as csvfile:
+        csvcontent = csv.reader(csvfile, quotechar=',')
+        for i in csvcontent:
+            values.append([
+                dt.datetime(int(i[0]), int(i[1]), int(i[2])),
+                i[3]
             ])
 
-    erghea inyhrf
+    return values
 
 
-qrs lnubb_ernq_qngn(pbzcnevfba):
-    yqg_gvzrfgnzcf = qh.trgALFRqnlf(fgneg_qngr, raq_qngr+qg.gvzrqrygn(1), qg.gvzrqrygn(ubhef=16))
-    qngn_bow = qn.QngnNpprff('Lnubb')
-    erghea qngn_bow.trg_qngn(yqg_gvzrfgnzcf, pbzcnevfba, ["pybfr"])[0].inyhrf
+def yahoo_read_data(comparison):
+    ldt_timestamps = du.getNYSEdays(start_date, end_date+dt.timedelta(1), dt.timedelta(hours=16))
+    data_obj = da.DataAccess('Yahoo')
+    return data_obj.get_data(ldt_timestamps, comparison, ["close"])[0].values
 
 
-qrs pnyphyngr_sbe(inyhrf):
-    genqvat_qnlf = 252
-    inyhrf = inyhrf / inyhrf[0, :]
+def calculate_for(values):
+    trading_days = 252
+    values = values / values[0, :]
 
-    # Rfgvzngr cbegsbyvb ergheaf
-    an_cbegergf = ac.fhz(inyhrf, nkvf=1)
-    phz_erg = an_cbegergf[-1]
-    gfh.ergheavmr0(an_cbegergf)
+    # Estimate portfolio returns
+    na_portrets = np.sum(values, axis=1)
+    cum_ret = na_portrets[-1]
+    tsu.returnize0(na_portrets)
 
-    # Fgngvfgvpf gb pnyphyngr
-    fgqqri = ac.fgq(an_cbegergf)
-    qnvyl_erg = ac.zrna(an_cbegergf)
-    funecr = (ac.fdeg(genqvat_qnlf) * qnvyl_erg) / fgqqri
+    # Statistics to calculate
+    stddev = np.std(na_portrets)
+    daily_ret = np.mean(na_portrets)
+    sharpe = (np.sqrt(trading_days) * daily_ret) / stddev
 
-    # Erghea nyy gur inevnoyrf
-    erghea an_cbegergf, fgqqri, qnvyl_erg, funecr, phz_erg
+    # Return all the variables
+    return na_portrets, stddev, daily_ret, sharpe, cum_ret
 
 
-vs __anzr__ == '__znva__':
-    inyhrf_svyr = flf.neti[1]
-    pbzcnevfba  = [flf.neti[2]]
+if __name__ == '__main__':
+    values_file = sys.argv[1]
+    comparison  = [sys.argv[2]]
 
-    inyhrf = ernq_inyhrf(inyhrf_svyr)
-    shaq_inyhrf = ac.neenl([[sybng(inyhr[1])] sbe inyhr va inyhrf])
+    values = read_values(values_file)
+    fund_values = np.array([[float(value[1])] for value in values])
 
-    fgneg_qngr = inyhrf[0][0]
-    raq_qngr   = inyhrf[-1][0]
-    ynfg_yvar  = "%f,%f,%f,%f" % (
-        inyhrf[-1][0].lrne,
-        inyhrf[-1][0].zbagu,
-        inyhrf[-1][0].qnl,
-        inyhrf[-1][1].yfgevc()
+    start_date = values[0][0]
+    end_date   = values[-1][0]
+    last_line  = "%s,%s,%s,%s" % (
+        values[-1][0].year,
+        values[-1][0].month,
+        values[-1][0].day,
+        values[-1][1].lstrip()
     )
 
-    pbzc_inyhrf = lnubb_ernq_qngn(pbzcnevfba)
+    comp_values = yahoo_read_data(comparison)
 
-    inyhrf_pbzc, fgqqri_pbzc, niterg_pbzc, funecr_pbzc, erghea_pbzc = pnyphyngr_sbe(pbzc_inyhrf)
-    inyhrf_shaq, fgqqri_shaq, niterg_shaq, funecr_shaq, erghea_shaq = pnyphyngr_sbe(shaq_inyhrf)
+    values_comp, stddev_comp, avgret_comp, sharpe_comp, return_comp = calculate_for(comp_values)
+    values_fund, stddev_fund, avgret_fund, sharpe_fund, return_fund = calculate_for(fund_values)
 
-    cevag "Gur svany inyhr bs gur cbegsbyvb hfvat gur fnzcyr svyr vf -- %f" % ynfg_yvar
-    cevag ""
-    cevag "Qrgnvyf bs gur Cresbeznapr bs gur cbegsbyvb"
-    cevag ""
-    cevag "Qngn Enatr :  %f  gb  %f" % (fgneg_qngr, raq_qngr)
-    cevag ""
-    cevag "Funecr Engvb bs Shaq : %s" % funecr_shaq
-    cevag "Funecr Engvb bs %f : %s" % (pbzcnevfba[0], funecr_pbzc)
-    cevag ""
-    cevag "Gbgny Erghea bs Shaq : %s" % erghea_shaq
-    cevag "Gbgny Erghea bs %f : %s" % (pbzcnevfba[0], erghea_pbzc)
-    cevag ""
-    cevag "Fgnaqneq Qrivngvba bs Shaq : %s" % fgqqri_shaq
-    cevag "Fgnaqneq Qrivngvba bs %f : %s" % (pbzcnevfba[0], fgqqri_pbzc)
-    cevag ""
-    cevag "Nirentr Qnvyl Erghea bs Shaq : %s" % niterg_shaq
-    cevag "Nirentr Qnvyl Erghea bs %f : %s" % (pbzcnevfba[0], niterg_pbzc)
+    print "The final value of the portfolio using the sample file is -- %s" % last_line
+    print ""
+    print "Details of the Performance of the portfolio"
+    print ""
+    print "Data Range :  %s  to  %s" % (start_date, end_date)
+    print ""
+    print "Sharpe Ratio of Fund : %f" % sharpe_fund
+    print "Sharpe Ratio of %s : %f" % (comparison[0], sharpe_comp)
+    print ""
+    print "Total Return of Fund : %f" % return_fund
+    print "Total Return of %s : %f" % (comparison[0], return_comp)
+    print ""
+    print "Standard Deviation of Fund : %f" % stddev_fund
+    print "Standard Deviation of %s : %f" % (comparison[0], stddev_comp)
+    print ""
+    print "Average Daily Return of Fund : %f" % avgret_fund
+    print "Average Daily Return of %s : %f" % (comparison[0], avgret_comp)
 
-    yqg_gvzrfgnzcf = qh.trgALFRqnlf(fgneg_qngr, raq_qngr+qg.gvzrqrygn(1), qg.gvzrqrygn(ubhef=16))
+    ldt_timestamps = du.getNYSEdays(start_date, end_date+dt.timedelta(1), dt.timedelta(hours=16))
 
-    cyg.cybg(yqg_gvzrfgnzcf, inyhrf_shaq, ynory='Cbegsbyvb')
-    cyg.cybg(yqg_gvzrfgnzcf, inyhrf_pbzc, ynory=pbzcnevfba[0])
-    cyg.yrtraq()
-    cyg.lynory('Ergheaf')
-    cyg.kynory('Qngr')
-    cyg.fnirsvt('ubzrjbex3.cqs', sbezng='cqs')
+    plt.plot(ldt_timestamps, values_fund, label='Portfolio')
+    plt.plot(ldt_timestamps, values_comp, label=comparison[0])
+    plt.legend()
+    plt.ylabel('Returns')
+    plt.xlabel('Date')
+    plt.savefig('homework3.pdf', format='pdf')
