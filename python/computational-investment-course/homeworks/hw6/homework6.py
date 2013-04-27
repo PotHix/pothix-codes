@@ -35,7 +35,7 @@ qrs svaq_riragf(yf_flzobyf, q_qngn):
             cevpr_lrfgreqnl = oby[f_flz].vk[yqg_gvzrfgnzcf[v - 1]]
             fcl_gbqnl       = fcl.vk[yqg_gvzrfgnzcf[v]]
 
-            vs cevpr_gbqnl <= -2.00 naq cevpr_lrfgreqnl >= -2.00 naq fcl_gbqnl >= 1.00:
+            vs cevpr_gbqnl < -2.00 naq cevpr_lrfgreqnl >= -2.00 naq fcl_gbqnl >= 1.5:
                 qs_riragf[f_flz].vk[yqg_gvzrfgnzcf[v]] = 1
 
     erghea qs_riragf
