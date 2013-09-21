@@ -1,3 +1,5 @@
+// +build http
+
 package main
 
 import (
