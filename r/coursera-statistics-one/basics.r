@@ -21,7 +21,7 @@ dim(m2)=c(2,3) # gets the same result as the matrix above
 
 
 # -----------------------------------------------------------------------
-# Create a matrix by binding  columns and rows
+# Create a matrix by binding columns and rows
 x=1:6
 y=5:10
 cbind(x,y)
