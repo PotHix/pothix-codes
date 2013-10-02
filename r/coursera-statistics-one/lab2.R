@@ -20,8 +20,9 @@
 
 # Check your working directory
 getwd()
+
 # If necessary, set your working directory
-# setwd("/Volumes/Conway/R")
+setwd("/home/pothix/repos/pothix-codes/r/coursera-statistics-one")
 
 # If necessary, install packages
 # install.packages("psych")
@@ -32,7 +33,7 @@ library(psych)
 library(sm)
 
 # Read data into a dataframe called impact
-impact <- read.table("stats1-datafiles-Stats1.13.Lab.02.txt", header = T)
+impact <- read.table("data/lab2.txt", header = T)
 
 # Get the dimensions of the dataframe
 dim(impact)
