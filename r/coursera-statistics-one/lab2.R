@@ -32,6 +32,9 @@ setwd("/home/pothix/repos/pothix-codes/r/coursera-statistics-one")
 library(psych)
 library(sm)
 
+# List all installed packages
+installed.packages()
+
 # Read data into a dataframe called impact
 impact <- read.table("data/lab2.txt", header = T)
 
@@ -46,27 +49,31 @@ edit(impact)
 class(impact)
 names(impact)
 
+# Type of impact columns
 class(impact$verbal_memory_baseline)
 class(impact$reaction_time_baseline)
 class(impact$subject)
 
+# Changes the type of impact$subject to factor
 impact$subject <- factor(impact$subject)
 class(impact$subject)
 
 # Summary statistics
-mean(impact$verbal_memory_baseline)
-sd(impact$verbal_memory_baseline)
+mean(impact$verbal_memory_baseline) # mean
+sd(impact$verbal_memory_baseline)   # standard deviation
 
+# Gives a overall summary of the entire data.frame witha lot of summary statistics
 describe(impact)
 
+# Gives a overall summary by a given column
 describeBy(impact, impact$condition)
 
-# Subsetting
-edit(impact)
-
+# Gets a subset of people in the control group
+# Using [,2] that means "all rows that column two says 'control'"
 control <- subset(impact, impact[, 2]=="control")
 control
 
+# The same for concussed
 concussed <- subset(impact, impact[, 2]=="concussed")
 concussed
 
@@ -79,13 +86,18 @@ hist(control[, 6], xlab = "Reaction time")
 hist(control[, 7], xlab = "Impulse control")
 hist(control[, 8], xlab = "Total symptom score")
 
+# ----------------------------------------------------------
+# Histograms of concussed group at baseline
+
 # To demonstrate that there is more than one way to access a variable
 par(mfrow = c(1,2)) # To view 2 histograms on one page
 hist(control[, 3], xlab = "Verbal memory", main = "")
 hist(control$verbal_memory_baseline, xlab = "Verbal memory", main = "")
 
-# Histograms of concussed group at baseline
+# Shows 6 histograms on the same page
 par(mfrow = c(2,3))
+
+# shows each histograms individually
 hist(concussed[, 3], xlab = "Verbal memory", main = "")
 hist(concussed[, 4], xlab = "Visual memory", main = "")
 hist(concussed[, 5], xlab = "Visual motor speed", main = "")
@@ -120,6 +132,3 @@ plot(density(concussed[, 14]), xlab = "Total sympton score", main = "")
 par(mfrow = c(1,1))
 sm.density.compare(impact$total_symptom_retest,
                    impact$condition, xlab = "Total symptom score")
-
-
-
