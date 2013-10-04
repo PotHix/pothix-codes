@@ -8,3 +8,12 @@ nrow(mydata)
 
 describe(mydata)
 mean(mydata$SR)
+var(mydata$SR)
+
+pre  <- subset(mydata, mydata[,3]=="pre")
+post <- subset(mydata, mydata[,3]=="post")
+
+mean(pre$SR)
+sd(post$SR)
+median(post$SR)
+describe(post)
