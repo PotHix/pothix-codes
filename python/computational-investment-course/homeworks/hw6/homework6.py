@@ -1,68 +1,68 @@
-#!/hfe/ova/clguba2
+#!/usr/bin/python2
 
-vzcbeg cnaqnf nf cq
-vzcbeg ahzcl nf ac
-vzcbeg pbcl
-vzcbeg qngrgvzr nf qg
+import pandas as pd
+import numpy as np
+import copy
+import datetime as dt
 
-# DFGX
-vzcbeg DFGX.dfgxhgvy.dfqngrhgvy nf qh
-vzcbeg DFGX.dfgxhgvy.QngnNpprff nf qn
-vzcbeg DFGX.dfgxfghql.RiragCebsvyre nf rc
-
-
-qrs svaq_riragf(yf_flzobyf, q_qngn):
-    ybbxonpx = 20
-    qs_pybfr = q_qngn["pybfr"]
-
-    # Qhcyvpngvat naq frggvat rirelguvat gb AnA
-    qs_riragf = pbcl.qrrcpbcl(qs_pybfr)
-    qs_riragf = qs_riragf * ac.ANA
-
-    # Nyy gvzrfgnzcf nf qngrgvzrf
-    yqg_gvzrfgnzcf = qs_pybfr.vaqrk
-
-    fzn = cq.ebyyvat_zrna(qs_pybfr, ybbxonpx)
-    fgq = cq.ebyyvat_fgq(qs_pybfr, ybbxonpx)
-
-    oby = (qs_pybfr - fzn) / fgq
-
-    sbe f_flz va yf_flzobyf[:-1]:
-        fcl = oby[yf_flzobyf[-1]]
-
-        sbe v va enatr(1, yra(yqg_gvzrfgnzcf)):
-            cevpr_gbqnl     = oby[f_flz].vk[yqg_gvzrfgnzcf[v]]
-            cevpr_lrfgreqnl = oby[f_flz].vk[yqg_gvzrfgnzcf[v - 1]]
-            fcl_gbqnl       = fcl.vk[yqg_gvzrfgnzcf[v]]
-
-            vs cevpr_gbqnl < -2.00 naq cevpr_lrfgreqnl >= -2.00 naq fcl_gbqnl >= 1.5:
-                qs_riragf[f_flz].vk[yqg_gvzrfgnzcf[v]] = 1
-
-    erghea qs_riragf
+# QSTK
+import QSTK.qstkutil.qsdateutil as du
+import QSTK.qstkutil.DataAccess as da
+import QSTK.qstkstudy.EventProfiler as ep
 
 
-vs __anzr__ == '__znva__':
-    qg_fgneg = qg.qngrgvzr(2008, 1, 1)
-    qg_raq = qg.qngrgvzr(2009, 12, 31)
-    yqg_gvzrfgnzcf = qh.trgALFRqnlf(qg_fgneg, qg_raq, qg.gvzrqrygn(ubhef=16))
+def find_events(ls_symbols, d_data):
+    lookback = 20
+    df_close = d_data["close"]
 
-    qngnbow = qn.QngnNpprff('Lnubb')
-    yf_flzobyf = qngnbow.trg_flzobyf_sebz_yvfg('fc5002012')
-    yf_flzobyf.nccraq('FCL')
-    yf_xrlf = ['pybfr']
+    # Duplicating and setting everything to NaN
+    df_events = copy.deepcopy(df_close)
+    df_events = df_events * np.NAN
 
-    yqs_qngn = qngnbow.trg_qngn(yqg_gvzrfgnzcf, yf_flzobyf, yf_xrlf)
-    q_qngn = qvpg(mvc(yf_xrlf, yqs_qngn))
+    # All timestamps as datetimes
+    ldt_timestamps = df_close.index
 
-    qs_riragf = svaq_riragf(yf_flzobyf, q_qngn)
+    sma = pd.rolling_mean(df_close, lookback)
+    std = pd.rolling_std(df_close, lookback)
 
-    sbe f_xrl va yf_xrlf:
-        q_qngn[f_xrl] = q_qngn[f_xrl].svyyan(zrgubq = 'ssvyy')
-        q_qngn[f_xrl] = q_qngn[f_xrl].svyyan(zrgubq = 'osvyy')
-        q_qngn[f_xrl] = q_qngn[f_xrl].svyyan(1.0)
+    bol = (df_close - sma) / std
 
-    cevag "Perngvat Fghql"
+    for s_sym in ls_symbols[:-1]:
+        spy = bol[ls_symbols[-1]]
 
-    rc.riragcebsvyre(qs_riragf, q_qngn, v_ybbxonpx=20, v_ybbxsbejneq=20,
-                f_svyranzr="ZlRiragFghql.cqs", o_znexrg_arhgeny=Gehr,
-                o_reebeonef=Gehr)
+        for i in range(1, len(ldt_timestamps)):
+            price_today     = bol[s_sym].ix[ldt_timestamps[i]]
+            price_yesterday = bol[s_sym].ix[ldt_timestamps[i - 1]]
+            spy_today       = spy.ix[ldt_timestamps[i]]
+
+            if price_today < -2.00 and price_yesterday >= -2.00 and spy_today >= 1.5:
+                df_events[s_sym].ix[ldt_timestamps[i]] = 1
+
+    return df_events
+
+
+if __name__ == '__main__':
+    dt_start = dt.datetime(2008, 1, 1)
+    dt_end = dt.datetime(2009, 12, 31)
+    ldt_timestamps = du.getNYSEdays(dt_start, dt_end, dt.timedelta(hours=16))
+
+    dataobj = da.DataAccess('Yahoo')
+    ls_symbols = dataobj.get_symbols_from_list('sp5002012')
+    ls_symbols.append('SPY')
+    ls_keys = ['close']
+
+    ldf_data = dataobj.get_data(ldt_timestamps, ls_symbols, ls_keys)
+    d_data = dict(zip(ls_keys, ldf_data))
+
+    df_events = find_events(ls_symbols, d_data)
+
+    for s_key in ls_keys:
+        d_data[s_key] = d_data[s_key].fillna(method = 'ffill')
+        d_data[s_key] = d_data[s_key].fillna(method = 'bfill')
+        d_data[s_key] = d_data[s_key].fillna(1.0)
+
+    print "Creating Study"
+
+    ep.eventprofiler(df_events, d_data, i_lookback=20, i_lookforward=20,
+                s_filename="MyEventStudy.pdf", b_market_neutral=True,
+                b_errorbars=True)
