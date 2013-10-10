@@ -25,7 +25,7 @@ setwd("/home/pothix/repos/pothix-codes/r/coursera-statistics-one")
 
 # If necessary, install packages
 # install.packages("psych")
-# install.packages("glus")
+# install.packages("gclus")
 # install.packages("rgl")
 
 # Load packages
@@ -88,4 +88,3 @@ cpairs(base, base.order, panel.colors = base.color, gap = .5,
 # Scatterplot in 3D
 plot3d(impact$vismem1, impact$sym1, impact$vermem1, main = "3D Plot")
 plot3d(impact$vismem2, impact$sym2, impact$vermem2, main = "3D Plot")
-
