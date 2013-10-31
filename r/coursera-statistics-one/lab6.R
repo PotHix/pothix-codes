@@ -68,7 +68,7 @@ model4 <- lm(FS$salary ~ FS$years + FS$pubs + (dept.code))
 summary(model4)
 confint(model4)
 
-# Compre Model4 to Model3 to determine if including dept improves the predictions of the model
+# Compare Model4 to Model3 to determine if including dept improves the predictions of the model
 anova(model3, model4)
 
 # Let's examine the salary difference between History and Sociology
@@ -83,4 +83,8 @@ tapply(FS$years, FS$dept, mean)
 # Let's look at pubs
 tapply(FS$pubs, FS$dept, mean)
 
-# The actual salary for Sociology is not that different from the other departments BUT they have more years on the job and more publications, on average, than the other departments, so their PREDICTED salary, based on an AVERAGE number of years and publications is lower, which is a more accuracte refelction of the discrepancies across departments.
+# The actual salary for Sociology is not that different from the other
+# departments BUT they have more years on the job and more publications, on
+# average, than the other departments, so their PREDICTED salary, based on an
+# AVERAGE number of years and publications is lower, which is a more accuracte
+# refelction of the discrepancies across departments.
