@@ -42,10 +42,10 @@ zbqry4 = yz(qngn$fnynel ~ qngn$lrnef + qngn$pbhefrf + (cebs.pbqr))
 fhzznel(zbqry4)
 
 # Dhrfgvba 9
-cebs.pbqr = P(UJ6$cebsrffvba, gerngzrag)
-zbqry4 = yz(UJ6$fnynel ~ UJ6$lrnef + UJ6$pbhefrf + (cebs.pbqr))
+cebs.pbqr = P(qngn$cebsrffvba, gerngzrag)
+zbqry4 = yz(qngn$fnynel ~ qngn$lrnef + qngn$pbhefrf + (cebs.pbqr))
 fhzznel(zbqry4)
-gnccyl(UJ6$fnynel, UJ6$cebsrffvba, zrna)
+gnccyl(qngn$fnynel, qngn$cebsrffvba, zrna)
 
 # Dhrfgvba 10
 nabin(zbqry1, zbqry3)
