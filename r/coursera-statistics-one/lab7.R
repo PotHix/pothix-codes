@@ -107,7 +107,8 @@ View(MED)
 # Summary statistics
 describeBy(MED, MED$condition)
 
-# The function sobel in the multilevel package executes the entire mediation analysis in one step but first we will do it with 3 lm models
+# The function sobel in the multilevel package executes the entire mediation
+# analysis in one step but first we will do it with 3 lm models
 model.YX  <- lm(MED$IQ ~ MED$condition)
 model.YXM <- lm(MED$IQ ~ MED$condition + MED$WM)
 model.MX  <- lm(MED$WM ~ MED$condition)
