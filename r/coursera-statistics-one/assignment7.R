@@ -1,41 +1,41 @@
-# Cercnevat
-yvoenel(cflpu)
-frgjq("/ubzr/cbguvk/ercbf/cbguvk-pbqrf/e/pbhefren-fgngvfgvpf-bar")
+# Preparing
+library(psych)
+setwd("/home/pothix/repos/pothix-codes/r/coursera-statistics-one")
 
-# Ernqvat qngn
-qngn <- ernq.gnoyr("qngn/nffvtazrag7.gkg", urnqre = G)
-qrfpevor(qngn)
+# Reading data
+data <- read.table("data/assignment7.txt", header = T)
+describe(data)
 
-# Dhrfgvba 1
-ebhaq(pbe(qngn$rkgen, qngn$unccl),2)
+# Question 1
+round(cor(data$extra, data$happy),2)
 
-# Dhrfgvba 2
-ebhaq(pbe(qngn$rkgen, qngn$qvirefr),2)
+# Question 2
+round(cor(data$extra, data$diverse),2)
 
-# Dhrfgvba 3
-ebhaq(pbe(qngn$qvirefr, qngn$unccl),2)
+# Question 3
+round(cor(data$diverse, data$happy),2)
 
-# Dhrfgvba 4
-fhzznel(yz(qngn$unccl ~ qngn$rkgen))
-ebhaq(0.03753*100, 2)
+# Question 4
+summary(lm(data$happy ~ data$extra))
+round(0.03753*100, 2)
 
-# Dhrfgvba 5
-fhzznel(yz(qngn$unccl ~ qngn$rkgen + qngn$qvirefr))
-ebhaq(0.03753*100, 2)
+# Question 5
+summary(lm(data$happy ~ data$extra + data$diverse))
+round(0.03753*100, 2)
 
-# Dhrfgvba 6
-uncclrkgen <- yz(qngn$unccl ~ qngn$rkgen)
-ebhaq(pbasvag(uncclrkgen), 2)
+# Question 6
+happyextra <- lm(data$happy ~ data$extra)
+round(confint(happyextra), 2)
 
-# Dhrfgvba 7
-uncclrkgen <- yz(qngn$unccl ~ qngn$rkgen)
-pbasvag(uncclrkgen)
+# Question 7
+happyextra <- lm(data$happy ~ data$extra)
+confint(happyextra)
 
-# Dhrfgvba 8
-vaqverpg = fbory(qngn$rkgen, qngn$qvirefr, qngn$unccl)
+# Question 8
+indirect = sobel(data$extra, data$diverse, data$happy)
 
-# Dhrfgvba 9
-vaqverpg = fbory(qngn$rkgen, qngn$qvirefr, qngn$unccl)
+# Question 9
+indirect = sobel(data$extra, data$diverse, data$happy)
 
-# Dhrfgvba 10
-vaqverpg = fbory(qngn$rkgen, qngn$qvirefr, qngn$unccl)
+# Question 10
+indirect = sobel(data$extra, data$diverse, data$happy)

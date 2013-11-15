@@ -1,55 +1,55 @@
-# Cercnevat
-yvoenel(cflpu)
-frgjq("/ubzr/cbguvk/ercbf/cbguvk-pbqrf/e/pbhefren-fgngvfgvpf-bar")
+# Preparing
+library(psych)
+setwd("/home/pothix/repos/pothix-codes/r/coursera-statistics-one")
 
-# Ernqvat qngn
-qngn <- ernq.gnoyr("qngn/nffvtazrag8.gkg", urnqre = G)
-qrfpevor(qngn)
+# Reading data
+data <- read.table("data/assignment8.txt", header = T)
+describe(data)
 
-# Dhrfgvba 1
-g.grfg(qngn$FE ~ qngn$gvzr, cnverq=G)
+# Question 1
+t.test(data$SR ~ data$time, paired=T)
 
-# Dhrfgvba 2
-jz = fhofrg(qngn, qngn$pbaqvgvba=="JZ")
-cr = fhofrg(qngn, qngn$pbaqvgvba=="CR")
-qf = fhofrg(qngn, qngn$pbaqvgvba=="QF")
-g.grfg(jz$FE ~ jz$gvzr, cnverq=G)
-g.grfg(cr$FE ~ cr$gvzr, cnverq=G)
-g.grfg(qf$FE ~ qf$gvzr, cnverq=G)
+# Question 2
+wm = subset(data, data$condition=="WM")
+pe = subset(data, data$condition=="PE")
+ds = subset(data, data$condition=="DS")
+t.test(wm$SR ~ wm$time, paired=T)
+t.test(pe$SR ~ pe$time, paired=T)
+t.test(ds$SR ~ ds$time, paired=T)
 
-# Dhrfgvba 3
-pburafQ(jz$FE ~ jz$gvzr, zrgubq="cnverq")
-pburafQ(cr$FE ~ cr$gvzr, zrgubq="cnverq")
-pburafQ(qf$FE ~ qf$gvzr, zrgubq="cnverq")
+# Question 3
+cohensD(wm$SR ~ wm$time, method="paired")
+cohensD(pe$SR ~ pe$time, method="paired")
+cohensD(ds$SR ~ ds$time, method="paired")
 
-# Dhrfgvba 4
-yvoenel(erfuncr)
-qngn.jvqr = pnfg(qngn, fhowrpg+pbaqvgvba~gvzr)
-qngn.jvqr$tnva = qngn.jvqr$cbfg - qngn.jvqr$cer
-jz.jvqr = fhofrg(qngn.jvqr, qngn.jvqr$pbaqvgvba=="JZ")
-cr.jvqr = fhofrg(qngn.jvqr, qngn.jvqr$pbaqvgvba=="CR")
-qf.jvqr = fhofrg(qngn.jvqr, qngn.jvqr$pbaqvgvba=="QF")
-g.grfg(jz.jvqr$tnva, cr.jvqr$tnva, ine.rdhny=G)
-g.grfg(jz.jvqr$tnva, qf.jvqr$tnva, ine.rdhny=G)
-g.grfg(qf.jvqr$tnva, cr.jvqr$tnva, ine.rdhny=G)
+# Question 4
+library(reshape)
+data.wide = cast(data, subject+condition~time)
+data.wide$gain = data.wide$post - data.wide$pre
+wm.wide = subset(data.wide, data.wide$condition=="WM")
+pe.wide = subset(data.wide, data.wide$condition=="PE")
+ds.wide = subset(data.wide, data.wide$condition=="DS")
+t.test(wm.wide$gain, pe.wide$gain, var.equal=T)
+t.test(wm.wide$gain, ds.wide$gain, var.equal=T)
+t.test(ds.wide$gain, pe.wide$gain, var.equal=T)
 
-# Dhrfgvba 5
-yrirarGrfg(qngn.jvqr$tnva, qngn.jvqr$pbaqvgvba)
+# Question 5
+leveneTest(data.wide$gain, data.wide$condition)
 
-# Dhrfgvba 6
-nbi.zbqry = nbi(qngn.jvqr$tnva ~ qngn.jvqr$pbaqvgvba)
-fhzznel(nbi.zbqry)
+# Question 6
+aov.model = aov(data.wide$gain ~ data.wide$condition)
+summary(aov.model)
 
-# Dhrfgvba 7
-yvoenel(yfe)
-rgnFdhnerq(nbi.zbqry, nabin=G)
+# Question 7
+library(lsr)
+etaSquared(aov.model, anova=T)
 
-# Dhrfgvba 8
-yvoenel(yfe)
-rgnFdhnerq(nbi.zbqry, nabin=G)
+# Question 8
+library(lsr)
+etaSquared(aov.model, anova=T)
 
-# Dhrfgvba 9
-GhxrlUFQ(nbi.zbqry)
+# Question 9
+TukeyHSD(aov.model)
 
-# Dhrfgvba 10
-GhxrlUFQ(nbi.zbqry)
+# Question 10
+TukeyHSD(aov.model)

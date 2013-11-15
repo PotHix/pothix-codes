@@ -1,54 +1,54 @@
-# Cercnevat
-yvoenel(cflpu)
-frgjq("/ubzr/cbguvk/ercbf/cbguvk-pbqrf/e/pbhefren-fgngvfgvpf-bar")
+# Preparing
+library(psych)
+setwd("/home/pothix/repos/pothix-codes/r/coursera-statistics-one")
 
-# Ernqvat qngn
-qngn <- ernq.gnoyr("qngn/nffvtazrag5.gkg", urnqre = G)
-qrfpevor(qngn)
+# Reading data
+data <- read.table("data/assignment5.txt", header = T)
+describe(data)
 
-# Dhrfgvba 1
-zbqry1 = yz(qngn$fnynel ~ qngn$lrnef)
-pbasvag(zbqry1)
+# Question 1
+model1 = lm(data$salary ~ data$years)
+confint(model1)
 
-# Dhrfgvba 2
-zbqry2 = yz(qngn$fnynel ~ qngn$pbhefrf)
-pbasvag(zbqry2)
+# Question 2
+model2 = lm(data$salary ~ data$courses)
+confint(model2)
 
-# Dhrfgvba 3
-zbqry3 = yz(qngn$fnynel ~ qngn$lrnef + qngn$pbhefrf)
-nabin(zbqry1, zbqry3)
-nabin(zbqry2, zbqry3)
+# Question 3
+model3 = lm(data$salary ~ data$years + data$courses)
+anova(model1, model3)
+anova(model2, model3)
 
-# Dhrfgvba 4
-zbqry3.m = yz(fpnyr(qngn$fnynel) ~ fpnyr(qngn$lrnef) + fpnyr(qngn$pbhefrf))
-pbasvag(zbqry3.m)
+# Question 4
+model3.z = lm(scale(data$salary) ~ scale(data$years) + scale(data$courses))
+confint(model3.z)
 
-# Dhrfgvba 5
-# fnzcyr
+# Question 5
+# sample
 
-# Dhrfgvba 6
-frg.frrq(1)
-fnzcyr = qngn[fnzcyr(aebj(qngn), 15), ]
+# Question 6
+set.seed(1)
+sample = data[sample(nrow(data), 15), ]
 
-# Dhrfgvba 7
-qngn.fhofrg = qngn[51:70,]
-zbqry3.fhofrg = yz(qngn.fhofrg$fnynel ~ qngn.fhofrg$lrnef + qngn.fhofrg$pbhefrf)
-fhzznel(zbqry3.fhofrg)
+# Question 7
+data.subset = data[51:70,]
+model3.subset = lm(data.subset$salary ~ data.subset$years + data.subset$courses)
+summary(model3.subset)
 
-# Dhrfgvba 8
-zbqry1.fhofrg = yz(qngn.fhofrg$fnynel ~ qngn.fhofrg$lrnef)
-zbqry2.fhofrg = yz(qngn.fhofrg$fnynel ~ qngn.fhofrg$pbhefrf)
-zbqry3.fhofrg = yz(qngn.fhofrg$fnynel ~ qngn.fhofrg$lrnef + qngn.fhofrg$pbhefrf)
-fhzznel(zbqry1.fhofrg)
-fhzznel(zbqry2.fhofrg)
-fhzznel(zbqry3.fhofrg)
-nabin(zbqry1.fhofrg, zbqry3.fhofrg)
-nabin(zbqry2.fhofrg, zbqry3.fhofrg)
+# Question 8
+model1.subset = lm(data.subset$salary ~ data.subset$years)
+model2.subset = lm(data.subset$salary ~ data.subset$courses)
+model3.subset = lm(data.subset$salary ~ data.subset$years + data.subset$courses)
+summary(model1.subset)
+summary(model2.subset)
+summary(model3.subset)
+anova(model1.subset, model3.subset)
+anova(model2.subset, model3.subset)
 
-# Dhrfgvba 9
-qngn.fhofrg$cerqvpgrq = svggrq(zbqry3.fhofrg)
-pbe(qngn.fhofrg$cerqvpgrq, qngn.fhofrg$fnynel)
+# Question 9
+data.subset$predicted = fitted(model3.subset)
+cor(data.subset$predicted, data.subset$salary)
 
-# Dhrfgvba 10
-qngn.fhofrg$reebe = erfvq(zbqry3.fhofrg)
-pbe(qngn.fhofrg$cerqvpgrq, qngn.fhofrg$reebe)
+# Question 10
+data.subset$error = resid(model3.subset)
+cor(data.subset$predicted, data.subset$error)

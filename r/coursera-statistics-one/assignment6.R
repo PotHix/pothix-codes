@@ -1,52 +1,52 @@
-# Cercnevat
-yvoenel(cflpu)
-frgjq("/ubzr/cbguvk/ercbf/cbguvk-pbqrf/e/pbhefren-fgngvfgvpf-bar")
+# Preparing
+library(psych)
+setwd("/home/pothix/repos/pothix-codes/r/coursera-statistics-one")
 
-# Ernqvat qngn
-qngn <- ernq.gnoyr("qngn/nffvtazrag6.gkg", urnqre = G)
-qrfpevor(qngn)
+# Reading data
+data <- read.table("data/assignment6.txt", header = T)
+describe(data)
 
-# Dhrfgvba 1
-zbqry1 = yz(qngn$fnynel ~ qngn$lrnef)
-fhzznel(zbqry1)
+# Question 1
+model1 = lm(data$salary ~ data$years)
+summary(model1)
 
-# Dhrfgvba 2
-zbqry1 = yz(qngn$fnynel ~ qngn$lrnef)
-pbasvag(zbqry1)
+# Question 2
+model1 = lm(data$salary ~ data$years)
+confint(model1)
 
-# Dhrfgvba 3
-zbqry3 = yz(qngn$fnynel ~ qngn$lrnef + qngn$pbhefrf)
-fhzznel(zbqry3)
+# Question 3
+model3 = lm(data$salary ~ data$years + data$courses)
+summary(model3)
 
-# Dhrfgvba 4
-pbasvag(zbqry3)
+# Question 4
+confint(model3)
 
-# Dhrfgvba 5
-cebs.pbqr = P(qngn$cebsrffvba, gerngzrag)
-zbqry4 = yz(qngn$fnynel ~ qngn$lrnef + qngn$pbhefrf + (cebs.pbqr))
-fhzznel(zbqry4)
+# Question 5
+prof.code = C(data$profession, treatment)
+model4 = lm(data$salary ~ data$years + data$courses + (prof.code))
+summary(model4)
 
-# Dhrfgvba 6
-cebs.pbqr = P(qngn$cebsrffvba, gerngzrag)
-zbqry4 = yz(qngn$fnynel ~ qngn$lrnef + qngn$pbhefrf + (cebs.pbqr))
-fhzznel(zbqry4)
+# Question 6
+prof.code = C(data$profession, treatment)
+model4 = lm(data$salary ~ data$years + data$courses + (prof.code))
+summary(model4)
 
-# Dhrfgvba 7
-cebs.pbqr = P(qngn$cebsrffvba, gerngzrag)
-zbqry4 = yz(qngn$fnynel ~ qngn$lrnef + qngn$pbhefrf + (cebs.pbqr))
-fhzznel(zbqry4)
+# Question 7
+prof.code = C(data$profession, treatment)
+model4 = lm(data$salary ~ data$years + data$courses + (prof.code))
+summary(model4)
 
-# Dhrfgvba 8
-cebs.pbqr = P(qngn$cebsrffvba, gerngzrag)
-zbqry4 = yz(qngn$fnynel ~ qngn$lrnef + qngn$pbhefrf + (cebs.pbqr))
-fhzznel(zbqry4)
+# Question 8
+prof.code = C(data$profession, treatment)
+model4 = lm(data$salary ~ data$years + data$courses + (prof.code))
+summary(model4)
 
-# Dhrfgvba 9
-cebs.pbqr = P(qngn$cebsrffvba, gerngzrag)
-zbqry4 = yz(qngn$fnynel ~ qngn$lrnef + qngn$pbhefrf + (cebs.pbqr))
-fhzznel(zbqry4)
-gnccyl(qngn$fnynel, qngn$cebsrffvba, zrna)
+# Question 9
+prof.code = C(data$profession, treatment)
+model4 = lm(data$salary ~ data$years + data$courses + (prof.code))
+summary(model4)
+tapply(data$salary, data$profession, mean)
 
-# Dhrfgvba 10
-nabin(zbqry1, zbqry3)
-nabin(zbqry2, zbqry3)
+# Question 10
+anova(model1, model3)
+anova(model2, model3)

@@ -1,46 +1,46 @@
-# Cercnevat
-yvoenel(cflpu)
-frgjq("/ubzr/cbguvk/ercbf/cbguvk-pbqrf/e/pbhefren-fgngvfgvpf-bar")
+# Preparing
+library(psych)
+setwd("/home/pothix/repos/pothix-codes/r/coursera-statistics-one")
 
-# Ernqvat qngn
-qngn <- ernq.gnoyr("qngn/nffvtazrag4.gkg", urnqre = G)
-qrfpevor(qngn)
+# Reading data
+data <- read.table("data/assignment4.txt", header = T)
+describe(data)
 
-# Dhrfgvba 1
-ebhaq(pbe(qngn$fnynel, qngn$lrnef), 2)
+# Question 1
+round(cor(data$salary, data$years), 2)
 
-# Dhrfgvba 2
-ebhaq(pbe(qngn$fnynel, qngn$pbhefrf), 2)
+# Question 2
+round(cor(data$salary, data$courses), 2)
 
-# Dhrfgvba 3
-zbqry1 = yz(qngn$fnynel ~ qngn$lrnef)
-fhzznel(zbqry1)
+# Question 3
+model1 = lm(data$salary ~ data$years)
+summary(model1)
 
-# Dhrfgvba 4
-pbe.grfg(qngn$fnynel, qngn$lrnef)
+# Question 4
+cor.test(data$salary, data$years)
 
-# Dhrfgvba 5
-zbqry3 = yz(qngn$fnynel ~ qngn$lrnef + qngn$pbhefrf)
-fhzznel(zbqry3)
+# Question 5
+model3 = lm(data$salary ~ data$years + data$courses)
+summary(model3)
 
-# Dhrfgvba 6
-zbqry3 = yz(qngn$fnynel ~ qngn$lrnef)
-fhzznel(zbqry3)
-# Hfr "Rfgvzngr" inyhr ebhaqrq
+# Question 6
+model3 = lm(data$salary ~ data$years)
+summary(model3)
+# Use "Estimate" value rounded
 
-# Dhrfgvba 7
-zbqry3 = yz(qngn$fnynel ~ qngn$pbhefrf)
-fhzznel(zbqry3)
-# Hfr "Rfgvzngr" inyhr ebhaqrq
+# Question 7
+model3 = lm(data$salary ~ data$courses)
+summary(model3)
+# Use "Estimate" value rounded
 
-# Dhrfgvba 8
-zbqry3 = yz(qngn$fnynel ~ qngn$lrnef + qngn$pbhefrf)
-qngn.cerqvpgrq = svggrq(zbqry3)
-ebhaq(zrna(qngn.cerqvpgrq), 0)
+# Question 8
+model3 = lm(data$salary ~ data$years + data$courses)
+data.predicted = fitted(model3)
+round(mean(data.predicted), 0)
 
-# Dhrfgvba 9
-zbqry3 = yz(qngn$fnynel ~ qngn$lrnef + qngn$pbhefrf)
-qngn.reebe = erfvq(zbqry3)
-ebhaq(zrna(qngn.reebe), 0)
+# Question 9
+model3 = lm(data$salary ~ data$years + data$courses)
+data.error = resid(model3)
+round(mean(data.error), 0)
 
-# Dhrfgvba 10
+# Question 10
