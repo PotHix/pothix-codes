@@ -15,9 +15,10 @@
 #    Training sessions (4 levels): 8, 12, 17, 19 (for each, n = 20)
 
 # Check your working directory
-# getwd()
+getwd()
+
 # If necessary, set your working directory
-# setwd("Users/aconway/Dropbox/STATS1-V2.0/Labs")
+setwd("/home/pothix/repos/pothix-codes/r/coursera-statistics-one")
 
 # If necessary, install packages
 # install.packages("psych")
@@ -31,7 +32,7 @@ library(ggplot2)
 library(reshape)
 
 # Read data into a dataframe called wm
-wm = read.table("Stats1.13.Lab.08.txt", header = T)
+wm = read.table("data/lab14.txt", header = T)
 
 # If you want to view the data
 # View(wm)
@@ -70,16 +71,16 @@ d.t = (wm.t.out[4,3]) / (wm.t.out[4,4])
 d.t
 #or
 cohensD(wm.t$post, wm.t$pre, method="paired")
- 
+
 # Boxplot
 long.wm <- melt(wm, id=c("cond", "train", "gain"))
 
-ggplot(long.wm, aes(x=cond, y=value, color=variable)) + 
+ggplot(long.wm, aes(x=cond, y=value, color=variable)) +
   geom_boxplot() +
-  guides(fill=FALSE) 
-  
+  guides(fill=FALSE)
+
 # Independent t-test
-# Compare the gain scores in the control and training groups 
+# Compare the gain scores in the control and training groups
 t.test(wm$gain ~ wm$train, var.equal = T)
 
 # Cohen's d for independent t-tests
@@ -93,10 +94,10 @@ d.ct
 cohensD(wm$gain ~ wm$train, method="pooled")
 
 # Boxplot
-ggplot(wm, aes(x=cond, y=gain, fill=cond)) + 
+ggplot(wm, aes(x=cond, y=gain, fill=cond)) +
   geom_boxplot() +
   guides(fill=FALSE)
-  
+
 # To compare the gain scores across all groups, use ANOVA
 # First, check the homogeneity of variance assumption
 leveneTest(wm.t$gain, wm.t$cond, center="mean")
