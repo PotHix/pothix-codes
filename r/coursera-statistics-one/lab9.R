@@ -25,7 +25,7 @@ library(car)
 library(lsr)
 
 # Read data into a dataframe called AB
-AB <- read.table("Stats1.13.Lab.09.txt", header = T)
+AB <- read.table("data/lab9.txt", header = T)
 
 # Let's look at the data
 edit(AB)
