@@ -13,7 +13,6 @@
 #   overall jury verdict)
 # The initial individual verdicts are given in this data set
 
-
 # Check your working directory
 getwd()
 
