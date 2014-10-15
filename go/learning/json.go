@@ -11,7 +11,7 @@ import (
 
 func main() {
 	// var f interface{}
-	resp, err := http.Get("https://planetexpress.futurama.locaweb.com.br:6969/audits/cfteams/ct_linux.json")
+	resp, err := http.Get("https://urlhere.com.br")
 	body, err := ioutil.ReadAll(resp.Body)
 
 	container := make(map[string]interface{})
