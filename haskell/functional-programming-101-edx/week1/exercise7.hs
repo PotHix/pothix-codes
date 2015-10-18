@@ -1,8 +1,16 @@
 mylist :: [Int]
-mylist = [5,4,7,1,3,2,6]
+mylist = [5,4,7,1,3,6,2,6]
 
 answer :: [Int]
-answer = [7,6,5,4,3,2,1]
+answer = [7,6,6,5,4,3,2,1]
+
+-- original
+qsort :: [Int] -> [Int]
+qsort []    = []
+qsort(x:xs) = qsort ys ++ [x] ++ qsort zs
+  where
+    ys = [a | a <- xs, a <= x]
+    zs = [b | b <- xs, b >  x]
 
 -- answer a
 qsorta :: [Int] -> [Int]
@@ -67,6 +75,7 @@ qsorth xs = x : qsorth larger ++ qsorth smaller
 
 main :: IO ( )
 main = do
+  putStrLn $ show $ qsort mylist
   putStrLn $ show $ qsorta mylist == answer
   putStrLn $ show $ qsortb mylist == answer
   putStrLn $ show False -- don't even compile
