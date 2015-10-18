@@ -1,22 +1,31 @@
+mylist :: [Int]
 mylist = [1,2,10]
+
+mylast :: Int
 mylast = 10
 
-last0 :: [a] -> [a]
-last1 :: [a] -> a
-last2 :: [a] -> [a]
--- last3 :: [a] -> a -- totally useless
-last4 :: [a] -> a
-last5 :: [a] -> a
-last6 :: [a] -> a
-last7 :: [a] -> a
+-- last0 :: [a] -> [a]
+-- last0 xs = drop (length xs - 1) xs
 
-last0 xs = drop (length xs - 1) xs
+last1 :: [a] -> a
 last1 xs = head (drop (length xs - 1) xs)
-last2 xs = tail $ reverse xs
+
+-- last2 :: [a] -> [a]
+-- last2 xs = tail $ reverse xs
+
+-- last3 :: [a] -> a -- totally useless
 -- last3 xs = reverse $ head xs  -- totally useless
+
+last4 :: [a] -> a
 last4 xs = xs !! (length xs - 1)
-last5 xs = head $ drop (length xs) xs
+
+-- last5 :: [a] -> a
+-- last5 xs = head $ drop (length xs) xs
+
+last6 :: [a] -> a
 last6 xs = head $ reverse xs
+
+last7 :: [a] -> a
 last7 xs = reverse xs !! (length xs - 1)
 
 main :: IO ()
