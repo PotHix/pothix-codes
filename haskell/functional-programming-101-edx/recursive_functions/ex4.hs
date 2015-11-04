@@ -1,5 +1,13 @@
 import Prelude hiding (and)
 
+truelist :: [Bool]
+truelist = [True, True]
+
+falselist :: [Bool]
+falselist = [True, False, True]
+
+emptylist = []
+
 -- answer a
 --and :: [Bool] -> Bool
 --and [] = True
@@ -23,11 +31,11 @@ import Prelude hiding (and)
 --and (b : bs) = b || and bs
 
 -- answer e
---and :: [Bool] -> Bool
---and [] = True
---and (b : bs)
---   | b == False = False
---   | otherwise and bs
+and :: [Bool] -> Bool
+and [] = True
+and (b : bs)
+   | b == False = False
+   | otherwise = and bs
 
 -- answer f
 --and :: [Bool] -> Bool
@@ -45,3 +53,10 @@ import Prelude hiding (and)
 --and (b : bs)
 --   | b = b
 --   | otherwise = and bs
+
+andtest :: Bool
+andtest = (and(truelist) == True) && (and(falselist) == False) && (and(emptylist) == True)
+
+main :: IO ( )
+main = do
+  putStrLn $ show $ andtest
