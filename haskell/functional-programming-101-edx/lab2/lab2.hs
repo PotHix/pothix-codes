@@ -32,7 +32,11 @@ doubleSecond xs = [if odd(y) then x*2 else x | (x,y) <- zip xs [0..]]
 -- ===================================
 
 sumDigits :: [Integer] -> Integer
-sumDigits = undefined
+sumDigits [] = 0
+sumDigits (x:xs)
+  | x < 0     = error "value less than 0 is not permitted"
+  | x >= 10   = sumDigits(toDigits x) + sumDigits xs
+  | otherwise = x + sumDigits xs
 
 
 -- ===================================
@@ -40,7 +44,7 @@ sumDigits = undefined
 -- ===================================
 
 isValid :: Integer -> Bool
-isValid = undefined
+isValid card = mod (sumDigits $ doubleSecond $ toDigitsRev card) 10 == 0
 
 
 -- ===================================
