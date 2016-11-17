@@ -1,0 +1,6 @@
+[package]
+name = "float"
+version = "0.1.0"
+authors = ["PotHix <pothix@pothix.com>"]
+
+[dependencies]
