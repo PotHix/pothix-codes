@@ -1,0 +1,151 @@
+<html>
+  <head>
+    <title>meu game snake!</title>
+  </head>
+  <body>
+    <canvas id="gamecanvas" width="400" height="400"></canvas>
+  </body>
+
+  <script>
+window.onload=function() {
+    canvas=document.getElementById("gamecanvas");
+    context=canvas.getContext("2d");
+
+    // cuida das teclas
+    document.addEventListener("keydown", handleKeys);
+
+    // esse é o game loop
+    setInterval(gameLoop, 1000/15);
+}
+
+// valor padrão do rastro
+TAIL_DEFAULT = 5;
+
+// Posição do jogador
+var playerposx = 10;
+var playerposy = 10;
+
+// Velocidade do jogador
+var playervelx = 0;
+var playervely = 0;
+
+// Tamanho do grid, vamos dividar em 20 quadrados de 20
+// preciso entender melhor o tile count
+var gridsize  = 20;
+var tilecount = 20;
+
+// posição inicial da fruta
+var fruitx = 15;
+var fruity = 15;
+
+// tamanho da cauda (do rabo)
+var tail = TAIL_DEFAULT;
+
+// array de rastro que usado na movimentação
+var trail = []
+
+function gameLoop() {
+    // aumentar a posição x e y do jogador
+    playerposx += playervelx;
+    playerposy += playervely;
+
+    // aqui vamos cuidar de todos os lados para quando o jogador
+    // chegar em um lado ele aparecer no outro
+    if(playerposx < 0) {
+        playerposx = tilecount - 1;
+    }
+    if(playerposx > tilecount - 1) {
+        playerposx = 0;
+    }
+    if(playerposy < 0) {
+        playerposy = tilecount - 1;
+    }
+    if(playerposy > tilecount - 1) {
+        playerposy = 0;
+    }
+
+    // agora é hora de pintar o canvas para termos um canvas preto
+    context.fillStyle="black";
+    context.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    for(var i=0; i<trail.length; i++) {
+        // aqui vamos pintar o jogador
+        context.fillStyle="lime";
+        context.fillRect(
+            trail[i].x * gridsize,
+            trail[i].y * gridsize,
+            gridsize - 2,
+            gridsize - 2
+        );
+
+        // caso acerte a cauda, volta para o valor inicial
+        if(trail[i].x == playerposx && trail[i].y == playerposy) {
+            tail = TAIL_DEFAULT;
+        }
+    }
+
+    // adiciona um novo item na cauda
+    trail.push({
+        x: playerposx,
+        y: playerposy
+    })
+
+    // o tamanho da cauda é sempre o tamanho definido em `tail`
+    while (trail.length > tail) {
+        trail.shift();
+    }
+
+    if (fruitx == playerposx && fruity == playerposy) {
+        // aumenta a cauda
+        tail++;
+
+        // nova posição da fruta
+        fruitx=Math.floor(Math.random()*tilecount);
+        fruity=Math.floor(Math.random()*tilecount);
+    }
+
+    // aqui vamos pintar a fruta que o jogador tem que pegar
+    context.fillStyle="red";
+    context.fillRect(
+        fruitx * gridsize,
+        fruity * gridsize,
+        gridsize - 2,
+        gridsize - 2
+    );
+}
+
+function handleKeys(event){
+    switch(event.keyCode) {
+
+    // esquerda
+    case 37:
+        playervelx = -1;
+        playervely =  0;
+        break;
+
+    // cima
+    case 38:
+        playervelx =  0;
+        playervely = -1;
+        break;
+
+    // direita
+    case 39:
+        playervelx = 1;
+        playervely = 0;
+        break;
+
+    // baixo
+    case 40:
+        playervelx = 0;
+        playervely = 1;
+        break
+    }
+}
+  </script>
+</html>
