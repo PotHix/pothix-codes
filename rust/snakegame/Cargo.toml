@@ -1,0 +1,11 @@
+[package]
+name = "snakegame"
+version = "0.1.0"
+authors = ["PotHix <pothix@pothix.com>"]
+
+[[bin]]
+name = "snake-game"
+path = "src/main.rs"
+
+[dependencies]
+piston_window = "0.69.1"
