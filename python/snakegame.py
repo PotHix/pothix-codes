@@ -1,9 +1,10 @@
-#!/usr/bin/python
+# pip install pygame # game itsel
+# pip install mypy   # type checking
 
 from typing import List, Tuple
 
 import pygame  # type: ignore
-import random
+from random import randint  # type: ignore
 
 WINDOW_WIDTH = 400
 WINDOW_HEIGHT = 400
@@ -14,6 +15,8 @@ class Snake(object):
     WIDTH = 20
     HEIGHT = 20
     MIN_TAIL = 3
+    WIDTH_TILES_PER_WINDOW = WINDOW_WIDTH / WIDTH
+    HEIGHT_TILES_PER_WINDOW = WINDOW_HEIGHT / HEIGHT
 
     def __init__(self) -> None:
         self.pos_x = 1
@@ -31,11 +34,9 @@ class Snake(object):
         self.vel_x, self.vel_y = self.handle_mov(events)
         self.check_borders()
 
-        # add the current position to the list
         self.trail.append((self.pos_x, self.pos_y))
 
-        # remove the first tuple of positions
-        while len(self.trail) > self.tail:
+        while(len(self.trail) > self.tail):
             self.trail.pop(0)
 
     def draw(self, screen: pygame.Surface) -> None:
@@ -47,9 +48,19 @@ class Snake(object):
                     x * self.WIDTH,
                     y * self.HEIGHT,
                     self.WIDTH - 1,
-                    self.HEIGHT - 1
+                    self.HEIGHT - 1,
                 ), 0
             )
+
+    def check_borders(self) -> None:
+        if self.pos_x > self.WIDTH_TILES_PER_WINDOW - 1:
+            self.pos_x = 0
+        if self.pos_x < 0:
+            self.pos_x = int(self.WIDTH_TILES_PER_WINDOW - 1)
+        if self.pos_y > self.HEIGHT_TILES_PER_WINDOW - 1:
+            self.pos_y = 0
+        if self.pos_y < 0:
+            self.pos_y = int(self.HEIGHT_TILES_PER_WINDOW - 1)
 
     def handle_mov(self, events: List[pygame.event.Event]) -> Tuple[int, int]:
         movement = (self.vel_x, self.vel_y)
@@ -67,16 +78,6 @@ class Snake(object):
 
         return movement
 
-    def check_borders(self) -> None:
-        if self.pos_x > WINDOW_WIDTH / self.WIDTH - 1:
-            self.pos_x = 0
-        elif self.pos_x < 0:
-            self.pos_x = int(WINDOW_WIDTH / self.WIDTH) - 1
-        elif self.pos_y > WINDOW_HEIGHT / self.HEIGHT - 1:
-            self.pos_y = 0
-        elif self.pos_y < 0:
-            self.pos_y = int(WINDOW_HEIGHT / self.HEIGHT) - 1
-
     def increase(self) -> None:
         self.tail += 1
 
@@ -84,10 +85,10 @@ class Snake(object):
         self.tail = self.MIN_TAIL
 
     def tail_collision(self) -> bool:
-        # ignore the last value. It should not be considered because
-        # it was just added and will always match
+        # we're not considering the last item because it will always
+        # match with the current one being checked
         for x, y in self.trail[:-2]:
-            if self.pos_x == x and self.pos_y == y:
+            if x == self.pos_x and y == self.pos_y:
                 return True
 
         return False
@@ -98,8 +99,8 @@ class Fruit(object):
     HEIGHT = 20
 
     def __init__(self) -> None:
-        self.pos_x = 10
-        self.pos_y = 10
+        self.pos_x = 5
+        self.pos_y = 5
 
     def update(self) -> None:
         pass
@@ -112,41 +113,53 @@ class Fruit(object):
                 self.pos_x * self.WIDTH,
                 self.pos_y * self.HEIGHT,
                 self.WIDTH - 1,
-                self.HEIGHT - 1
-            ), 0
+                self.HEIGHT - 1,
+            )
         )
 
     def regenerate(self) -> None:
-        self.pos_x = random.randint(0, self.WIDTH)
-        self.pos_y = random.randint(0, self.HEIGHT)
+        self.pos_x = randint(0, self.WIDTH - 1)
+        self.pos_y = randint(0, self.HEIGHT - 1)
 
 
-def game_loop(screen: pygame.Surface) -> None:
+def game_loop(screen: pygame.Surface, font: pygame.font.Font) -> None:
     clock = pygame.time.Clock()
     snake = Snake()
     fruit = Fruit()
+
+    # sound = pygame.mixer.Sound("/tmp/peep.ogg")
 
     while True:
         events = pygame.event.get()
         handle_quit(events)
 
-        # fills the whole screen in black
+        # paint the entire screen
         screen.fill(pygame.color.Color("black"))
 
         if snake.pos_x == fruit.pos_x and snake.pos_y == fruit.pos_y:
-            fruit.regenerate()
+            # sound.play()
             snake.increase()
-
-        snake.update(events)
-        snake.draw(screen)
-
-        fruit.update()
-        fruit.draw(screen)
+            fruit.regenerate()
 
         if snake.tail_collision():
             snake.reset()
 
+        # paint the snake
+        snake.update(events)
+        snake.draw(screen)
+
+        # paint the fruit
+        fruit.update()
+        fruit.draw(screen)
+
+        score = font.render(
+            "score: %s" % snake.tail, 1, pygame.color.Color("white"))
+        screen.blit(score, (0, 0))
+
+        # update the screen
         pygame.display.update()
+
+        # deal with frames per second
         clock.tick(FPS)
 
 
@@ -154,11 +167,12 @@ def handle_quit(events: List[pygame.event.Event]) -> None:
     for ev in events:
         if ev.type == pygame.QUIT:
             exit(0)
-        elif ev.type == pygame.KEYDOWN and ev.key == pygame.K_ESCAPE:
+        if ev.type == pygame.KEYDOWN and ev.key == pygame.K_ESCAPE:
             exit(0)
 
 
 def run() -> None:
+    pygame.font.init()
     pygame.init()
 
     screen = pygame.display.set_mode(
@@ -166,8 +180,9 @@ def run() -> None:
         pygame.HWSURFACE
     )
     pygame.display.set_caption("Snakegame")
+    font = pygame.font.SysFont("monospace", 15)
 
-    game_loop(screen)
+    game_loop(screen, font)
 
 
 run()
