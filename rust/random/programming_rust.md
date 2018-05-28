@@ -97,4 +97,26 @@ Move
 * Moves are used on values that may take a lot of memory to copy
 
 Copy
-* 
+* Only files for which a bit-per-bit copy suffices can be `Copy` (trait)
+* It's possible to make your own objects (like structs) `Copy` as
+  well. You can derive them from `Copy` and `Clone`. Keep in mind that
+  if you're using some type that requires the head it will not be
+  possible to make it `Copy`
+
+Arc and Rc
+* Arc is the *atomic reference counter* while RC is a reference
+  counter that is not thread safe. Arc pays the price to be thread
+  safe; you should use Rc whenever possible.
+  
+References in Rust
+* The . operator automatically dereferences a reference
+* References to references are permitted in Rust. The . operator
+  traverses all references. In case there are more than one, it will
+  go one by one until it reaches the root value
+* At machine level, Rust represents None as nullptr. It's just as
+  efficient but safer. If you need to receive something or None, use
+  `Option<&T>`
+* A reference to a slice is a fat pointer carrying the initial value
+  and its length.
+* A lifetime is just part of the Rust compiler imagination. In the
+  real world, your references are just addresses.
