@@ -1,0 +1,12 @@
+[package]
+name = "snakegamepkg"
+version = "0.0.1"
+authors = ["PotHix <pothix@pothix.com>"]
+
+[dependencies]
+wasm-bindgen = "0.2"
+
+[lib]
+name = "snakegamelib"
+crate-type = ["cdylib", "rlib"]
+path = "src/lib.rs"
