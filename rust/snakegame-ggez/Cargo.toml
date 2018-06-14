@@ -1,0 +1,8 @@
+[package]
+name = "snakegame-ggez"
+version = "0.1.0"
+authors = ["PotHix <pothix@pothix.com>"]
+
+[dependencies]
+ggez = "0.4"
+rand = "0.4"
