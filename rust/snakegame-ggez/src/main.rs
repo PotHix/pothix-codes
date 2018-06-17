@@ -37,3 +37,10 @@ fn main() {
         Ok(_) => println!("Thanks for playing!")
     }
 }
+
+// implementation steps:
+//
+// 1. extern ggez
+// 2. create the struct and implement ::new for it returning the initialized struct
+// 3. implement the EventHandler for the Game. Implementing `update` and `draw`
+// 4. prepare the window in main and run event::run for the game
