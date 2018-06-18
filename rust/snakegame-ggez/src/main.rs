@@ -88,11 +88,11 @@ impl Snake {
 
     fn draw(&self, ctx: &mut ggez::Context) -> ggez::GameResult<()> {
         for pos in self.body.iter() {
-            ggez::graphics::set_color(ctx, (1, 0, 0).into())?;
+            ggez::graphics::set_color(ctx,[0.0, 0.0, 1.0, 1.0].into())?;
             ggez::graphics::rectangle(ctx, ggez::graphics::DrawMode::Fill, pos.into())?;
         }
 
-        ggez::graphics::set_color(ctx, (0, 1, 0).into())?;
+        ggez::graphics::set_color(ctx, [0.0, 0.0, 1.0, 1.0].into())?;
         ggez::graphics::rectangle(ctx, ggez::graphics::DrawMode::Fill, self.head.into())?;
 
         Ok(())
@@ -106,7 +106,7 @@ fn main() {
         .window_mode(ggez::conf::WindowMode::default().dimensions(640, 480))
         .build().expect("Could not build ggez context");
 
-    // ggez::graphics::set_background_color(ctx, (0, 0, 1).into()); 
+    ggez::graphics::set_background_color(ctx, (0, 0, 0).into()); 
 
     let game = &mut Game::new();
 
