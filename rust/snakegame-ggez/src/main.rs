@@ -34,19 +34,24 @@ impl ggez::event::EventHandler for Game {
         Ok(())
     }
 
-    fn key_down_event(&mut self, _ctx: &mut ggez::Context, keycode: ggez::event::Keycode, _keymod: ggez::event::Mod, _repeat: bool) {
+    fn key_down_event(
+        &mut self,
+        _ctx: &mut ggez::Context,
+        keycode: ggez::event::Keycode,
+        _keymod: ggez::event::Mod,
+        _repeat: bool,
+    ) {
         if let Some(direction) = Direction::from_keycode(keycode) {
             self.snake.direction = direction;
         }
     }
 }
 
-
 enum Direction {
     Up,
     Down,
     Left,
-    Right
+    Right,
 }
 
 impl Direction {
@@ -56,11 +61,10 @@ impl Direction {
             ggez::event::Keycode::Down => Some(Direction::Down),
             ggez::event::Keycode::Left => Some(Direction::Left),
             ggez::event::Keycode::Right => Some(Direction::Right),
-            _ => None
+            _ => None,
         }
     }
 }
-
 
 #[derive(Clone, Copy, Debug)]
 struct Position {
@@ -81,18 +85,21 @@ impl Position {
 
 impl From<(i16, i16)> for Position {
     fn from(pos: (i16, i16)) -> Self {
-        Position {x: pos.0, y:pos.1}
+        Position { x: pos.0, y: pos.1 }
     }
 }
 
 impl From<Position> for ggez::graphics::Rect {
-    fn from(pos: Position) -> Self { pos.new_rect() }
+    fn from(pos: Position) -> Self {
+        pos.new_rect()
+    }
 }
 
 impl<'a> From<&'a Position> for ggez::graphics::Rect {
-    fn from(pos: &'a Position) -> Self { pos.new_rect() }
+    fn from(pos: &'a Position) -> Self {
+        pos.new_rect()
+    }
 }
-
 
 struct Snake {
     head: Position,
@@ -103,8 +110,11 @@ struct Snake {
 impl Snake {
     pub fn new(pos: Position) -> Self {
         let mut body = LinkedList::new();
-        body.push_front(Position{x: pos.x-1, y: pos.y});
-        
+        body.push_front(Position {
+            x: pos.x - 1,
+            y: pos.y,
+        });
+
         Snake {
             head: pos,
             body: body,
@@ -112,8 +122,7 @@ impl Snake {
         }
     }
 
-    fn update(&mut self) {
-    }
+    fn update(&mut self) {}
 
     fn draw(&self, ctx: &mut ggez::Context) -> ggez::GameResult<()> {
         for pos in self.body.iter() {
@@ -128,20 +137,23 @@ impl Snake {
     }
 }
 
-
 fn main() {
     let ctx = &mut ggez::ContextBuilder::new("snakegame", "PotHix")
         .window_setup(ggez::conf::WindowSetup::default().title("Rust snake game"))
-        .window_mode(ggez::conf::WindowMode::default().dimensions(20 * PIXEL_SIZE.0 as u32, 20 * PIXEL_SIZE.1 as u32))
-        .build().expect("Could not build ggez context");
+        .window_mode(
+            ggez::conf::WindowMode::default()
+                .dimensions(20 * PIXEL_SIZE.0 as u32, 20 * PIXEL_SIZE.1 as u32),
+        )
+        .build()
+        .expect("Could not build ggez context");
 
-    ggez::graphics::set_background_color(ctx, (0, 0, 0).into()); 
+    ggez::graphics::set_background_color(ctx, (0, 0, 0).into());
 
     let game = &mut Game::new();
 
     match ggez::event::run(ctx, game) {
         Err(e) => println!("x.x error raised: {}", e),
-        Ok(_) => println!("Thanks for playing!")
+        Ok(_) => println!("Thanks for playing!"),
     }
 }
 
