@@ -2,8 +2,10 @@ extern crate ggez;
 
 use std::collections::LinkedList;
 
-const INIT_POS: (i16, i16) = (10, 10);
+const INIT_POS: (i16, i16) = (5, 5);
 const PIXEL_SIZE: (i16, i16) = (20, 20);
+
+const GREEN: [f32; 4] = [0.0, 1.0, 0.0, 1.0];
 
 struct Game {
     snake: Snake,
@@ -25,9 +27,37 @@ impl ggez::event::EventHandler for Game {
 
     fn draw(&mut self, ctx: &mut ggez::Context) -> ggez::GameResult<()> {
         ggez::graphics::clear(ctx);
+
         self.snake.draw(ctx)?;
+
         ggez::graphics::present(ctx);
         Ok(())
+    }
+
+    fn key_down_event(&mut self, _ctx: &mut ggez::Context, keycode: ggez::event::Keycode, _keymod: ggez::event::Mod, _repeat: bool) {
+        if let Some(direction) = Direction::from_keycode(keycode) {
+            self.snake.direction = direction;
+        }
+    }
+}
+
+
+enum Direction {
+    Up,
+    Down,
+    Left,
+    Right
+}
+
+impl Direction {
+    pub fn from_keycode(key: ggez::event::Keycode) -> Option<Direction> {
+        match key {
+            ggez::event::Keycode::Up => Some(Direction::Up),
+            ggez::event::Keycode::Down => Some(Direction::Down),
+            ggez::event::Keycode::Left => Some(Direction::Left),
+            ggez::event::Keycode::Right => Some(Direction::Right),
+            _ => None
+        }
     }
 }
 
@@ -38,6 +68,17 @@ struct Position {
     y: i16,
 }
 
+impl Position {
+    fn new_rect(&self) -> ggez::graphics::Rect {
+        ggez::graphics::Rect::new_i32(
+            self.x as i32 * PIXEL_SIZE.0 as i32,
+            self.y as i32 * PIXEL_SIZE.1 as i32,
+            PIXEL_SIZE.0 as i32,
+            PIXEL_SIZE.1 as i32,
+        )
+    }
+}
+
 impl From<(i16, i16)> for Position {
     fn from(pos: (i16, i16)) -> Self {
         Position {x: pos.0, y:pos.1}
@@ -45,31 +86,18 @@ impl From<(i16, i16)> for Position {
 }
 
 impl From<Position> for ggez::graphics::Rect {
-    fn from(pos: Position) -> Self {
-        ggez::graphics::Rect::new_i32(
-            pos.x as i32,
-            pos.y as i32,
-            PIXEL_SIZE.0 as i32,
-            PIXEL_SIZE.1 as i32,
-        )
-    }
+    fn from(pos: Position) -> Self { pos.new_rect() }
 }
 
 impl<'a> From<&'a Position> for ggez::graphics::Rect {
-    fn from(pos: &'a Position) -> Self {
-        ggez::graphics::Rect::new_i32(
-            pos.x as i32,
-            pos.y as i32,
-            PIXEL_SIZE.0 as i32,
-            PIXEL_SIZE.1 as i32,
-        )
-    }
+    fn from(pos: &'a Position) -> Self { pos.new_rect() }
 }
 
 
 struct Snake {
     head: Position,
     body: LinkedList<Position>,
+    direction: Direction,
 }
 
 impl Snake {
@@ -80,6 +108,7 @@ impl Snake {
         Snake {
             head: pos,
             body: body,
+            direction: Direction::Right,
         }
     }
 
@@ -88,11 +117,11 @@ impl Snake {
 
     fn draw(&self, ctx: &mut ggez::Context) -> ggez::GameResult<()> {
         for pos in self.body.iter() {
-            ggez::graphics::set_color(ctx,[0.0, 0.0, 1.0, 1.0].into())?;
+            ggez::graphics::set_color(ctx, GREEN.into())?;
             ggez::graphics::rectangle(ctx, ggez::graphics::DrawMode::Fill, pos.into())?;
         }
 
-        ggez::graphics::set_color(ctx, [0.0, 0.0, 1.0, 1.0].into())?;
+        ggez::graphics::set_color(ctx, GREEN.into())?;
         ggez::graphics::rectangle(ctx, ggez::graphics::DrawMode::Fill, self.head.into())?;
 
         Ok(())
@@ -103,7 +132,7 @@ impl Snake {
 fn main() {
     let ctx = &mut ggez::ContextBuilder::new("snakegame", "PotHix")
         .window_setup(ggez::conf::WindowSetup::default().title("Rust snake game"))
-        .window_mode(ggez::conf::WindowMode::default().dimensions(640, 480))
+        .window_mode(ggez::conf::WindowMode::default().dimensions(20 * PIXEL_SIZE.0 as u32, 20 * PIXEL_SIZE.1 as u32))
         .build().expect("Could not build ggez context");
 
     ggez::graphics::set_background_color(ctx, (0, 0, 0).into()); 
