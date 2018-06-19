@@ -36,11 +36,15 @@ impl ggez::event::EventHandler for Game {
 
     fn key_down_event(
         &mut self,
-        _ctx: &mut ggez::Context,
+        ctx: &mut ggez::Context,
         keycode: ggez::event::Keycode,
         _keymod: ggez::event::Mod,
         _repeat: bool,
     ) {
+        if keycode == ggez::event::Keycode::Escape {
+            ctx.quit();
+        }
+
         if let Some(direction) = Direction::from_keycode(keycode) {
             self.snake.direction = direction;
         }
@@ -165,3 +169,4 @@ fn main() {
 // 4. prepare the window in main and run event::run for the game
 // 5. create the snake struct and implement new
 // 6. initialize snake on the game new
+// 7. implement ctx.quit() for the event handler
