@@ -20,8 +20,12 @@ impl Game {
 }
 
 impl ggez::event::EventHandler for Game {
-    fn update(&mut self, _ctx: &mut ggez::Context) -> ggez::GameResult<()> {
-        self.snake.update();
+    fn update(&mut self, ctx: &mut ggez::Context) -> ggez::GameResult<()> {
+        const DESIRED_FPS: i8 = 10;
+
+        while ggez::timer::check_update_time(ctx, DESIRED_FPS as u32) {
+            self.snake.update();
+        }
         Ok(())
     }
 
@@ -42,7 +46,11 @@ impl ggez::event::EventHandler for Game {
         _repeat: bool,
     ) {
         if keycode == ggez::event::Keycode::Escape {
-            ctx.quit();
+            let result = ctx.quit();
+            match result {
+                Err(e) => println!("Cannot leave the game right now: {}", e),
+                Ok(_) => (),
+            }
         }
 
         if let Some(direction) = Direction::from_keycode(keycode) {
@@ -51,6 +59,7 @@ impl ggez::event::EventHandler for Game {
     }
 }
 
+#[derive(Clone, Copy, Debug)]
 enum Direction {
     Up,
     Down,
@@ -77,31 +86,45 @@ struct Position {
 }
 
 impl Position {
-    fn new_rect(&self) -> ggez::graphics::Rect {
+    pub fn new(x: i16, y: i16) -> Self {
+        Self { x, y }
+    }
+
+    pub fn new_by_direction(pos: Position, direction: Direction) -> Self {
+        match direction {
+            Direction::Up => Position::new(pos.x, pos.y - 1),
+            Direction::Down => Position::new(pos.x, pos.y + 1),
+            Direction::Left => Position::new(pos.x - 1, pos.y),
+            Direction::Right => Position::new(pos.x + 1, pos.y),
+        }
+    }
+}
+
+impl From<(i16, i16)> for Position {
+    fn from(pos: (i16, i16)) -> Self {
+        Self { x: pos.0, y: pos.1 }
+    }
+}
+
+impl From<Position> for ggez::graphics::Rect {
+    fn from(pos: Position) -> Self {
         ggez::graphics::Rect::new_i32(
-            self.x as i32 * PIXEL_SIZE.0 as i32,
-            self.y as i32 * PIXEL_SIZE.1 as i32,
+            pos.x as i32 * PIXEL_SIZE.0 as i32,
+            pos.y as i32 * PIXEL_SIZE.1 as i32,
             PIXEL_SIZE.0 as i32,
             PIXEL_SIZE.1 as i32,
         )
     }
 }
 
-impl From<(i16, i16)> for Position {
-    fn from(pos: (i16, i16)) -> Self {
-        Position { x: pos.0, y: pos.1 }
-    }
-}
-
-impl From<Position> for ggez::graphics::Rect {
-    fn from(pos: Position) -> Self {
-        pos.new_rect()
-    }
-}
-
 impl<'a> From<&'a Position> for ggez::graphics::Rect {
     fn from(pos: &'a Position) -> Self {
-        pos.new_rect()
+        ggez::graphics::Rect::new_i32(
+            pos.x as i32 * PIXEL_SIZE.0 as i32,
+            pos.y as i32 * PIXEL_SIZE.1 as i32,
+            PIXEL_SIZE.0 as i32,
+            PIXEL_SIZE.1 as i32,
+        )
     }
 }
 
@@ -126,7 +149,13 @@ impl Snake {
         }
     }
 
-    fn update(&mut self) {}
+    fn update(&mut self) {
+        let new_head = Position::new_by_direction(self.head, self.direction);
+        self.body.push_front(self.head);
+        self.head = new_head;
+
+        self.body.pop_back();
+    }
 
     fn draw(&self, ctx: &mut ggez::Context) -> ggez::GameResult<()> {
         for pos in self.body.iter() {
@@ -170,3 +199,6 @@ fn main() {
 // 5. create the snake struct and implement new
 // 6. initialize snake on the game new
 // 7. implement ctx.quit() for the event handler
+// 8. implement Direction
+// 9. use direction to add a new head (following that direction) and pop one piece of the body
+//10. implement FPS
