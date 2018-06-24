@@ -1,5 +1,7 @@
 extern crate ggez;
+extern crate rand;
 
+use rand::Rng; // For the result of thread_rng()
 use std::collections::LinkedList;
 
 const SNAKE_INIT_POS: (i16, i16) = (5, 5);
@@ -25,7 +27,7 @@ impl Game {
     pub fn new() -> Self {
         Game {
             snake: Snake::new(SNAKE_INIT_POS.into()),
-            fruit: Fruit::new(),
+            fruit: Fruit::new(FRUIT_INIT_POS.into()),
         }
     }
 }
@@ -104,7 +106,15 @@ impl Position {
     }
 
     pub fn random(max_x: i16, max_y: i16) -> Self {
-        Self { x: max_x, y: max_y }
+        let mut rng = rand::thread_rng();
+
+        let rand_x = rng.gen_range(0, max_x as u32);
+        let rand_y = rng.gen_range(0, max_y as u32);
+
+        Self {
+            x: rand_x as i16,
+            y: rand_y as i16,
+        }
     }
 
     pub fn new_by_direction(pos: Position, direction: Direction) -> Self {
@@ -192,10 +202,8 @@ struct Fruit {
 }
 
 impl Fruit {
-    pub fn new() -> Self {
-        Self {
-            pos: Position::new(FRUIT_INIT_POS.0, FRUIT_INIT_POS.1),
-        }
+    pub fn new(pos: Position) -> Self {
+        Self { pos: pos }
     }
 
     fn update(&mut self) {}
