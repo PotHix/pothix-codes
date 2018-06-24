@@ -2,19 +2,30 @@ extern crate ggez;
 
 use std::collections::LinkedList;
 
-const INIT_POS: (i16, i16) = (5, 5);
+const SNAKE_INIT_POS: (i16, i16) = (5, 5);
+const FRUIT_INIT_POS: (i16, i16) = (10, 10);
+
+const SIZE_IN_PIXEL: (i16, i16) = (20, 20);
 const PIXEL_SIZE: (i16, i16) = (20, 20);
 
+const SCREEN_SIZE: (i16, i16) = (
+    SIZE_IN_PIXEL.0 * PIXEL_SIZE.0,
+    SIZE_IN_PIXEL.1 * PIXEL_SIZE.1,
+);
+
 const GREEN: [f32; 4] = [0.0, 1.0, 0.0, 1.0];
+const RED: [f32; 4] = [1.0, 0.0, 0.0, 1.0];
 
 struct Game {
     snake: Snake,
+    fruit: Fruit,
 }
 
 impl Game {
     pub fn new() -> Self {
         Game {
-            snake: Snake::new(INIT_POS.into()),
+            snake: Snake::new(SNAKE_INIT_POS.into()),
+            fruit: Fruit::new(),
         }
     }
 }
@@ -25,6 +36,7 @@ impl ggez::event::EventHandler for Game {
 
         while ggez::timer::check_update_time(ctx, DESIRED_FPS as u32) {
             self.snake.update();
+            self.fruit.update();
         }
         Ok(())
     }
@@ -32,6 +44,7 @@ impl ggez::event::EventHandler for Game {
     fn draw(&mut self, ctx: &mut ggez::Context) -> ggez::GameResult<()> {
         ggez::graphics::clear(ctx);
 
+        self.fruit.draw(ctx)?;
         self.snake.draw(ctx)?;
 
         ggez::graphics::present(ctx);
@@ -90,6 +103,10 @@ impl Position {
         Self { x, y }
     }
 
+    pub fn random(max_x: i16, max_y: i16) -> Self {
+        Self { x: max_x, y: max_y }
+    }
+
     pub fn new_by_direction(pos: Position, direction: Direction) -> Self {
         match direction {
             Direction::Up => Position::new(pos.x, pos.y - 1),
@@ -142,7 +159,7 @@ impl Snake {
             y: pos.y,
         });
 
-        Snake {
+        Self {
             head: pos,
             body: body,
             direction: Direction::Right,
@@ -170,12 +187,33 @@ impl Snake {
     }
 }
 
+struct Fruit {
+    pos: Position,
+}
+
+impl Fruit {
+    pub fn new() -> Self {
+        Self {
+            pos: Position::new(FRUIT_INIT_POS.0, FRUIT_INIT_POS.1),
+        }
+    }
+
+    fn update(&mut self) {}
+
+    fn draw(&self, ctx: &mut ggez::Context) -> ggez::GameResult<()> {
+        ggez::graphics::set_color(ctx, RED.into())?;
+        ggez::graphics::rectangle(ctx, ggez::graphics::DrawMode::Fill, self.pos.into())?;
+
+        Ok(())
+    }
+}
+
 fn main() {
     let ctx = &mut ggez::ContextBuilder::new("snakegame", "PotHix")
         .window_setup(ggez::conf::WindowSetup::default().title("Rust snake game"))
         .window_mode(
             ggez::conf::WindowMode::default()
-                .dimensions(20 * PIXEL_SIZE.0 as u32, 20 * PIXEL_SIZE.1 as u32),
+                .dimensions(SCREEN_SIZE.0 as u32, SCREEN_SIZE.1 as u32),
         )
         .build()
         .expect("Could not build ggez context");
@@ -202,3 +240,4 @@ fn main() {
 // 8. implement Direction
 // 9. use direction to add a new head (following that direction) and pop one piece of the body
 //10. implement FPS
+//11. implement the basics of a fruit to be able to print (update and draw)
