@@ -61,10 +61,8 @@ impl ggez::event::EventHandler for Game {
         _repeat: bool,
     ) {
         if keycode == ggez::event::Keycode::Escape {
-            let result = ctx.quit();
-            match result {
-                Err(e) => println!("Cannot leave the game right now: {}", e),
-                Ok(_) => (),
+            if let Err(e) = ctx.quit() {
+                println!("Cannot leave the game right now: {}", e);
             }
         }
 
@@ -136,10 +134,10 @@ impl From<(i16, i16)> for Position {
 impl From<Position> for ggez::graphics::Rect {
     fn from(pos: Position) -> Self {
         ggez::graphics::Rect::new_i32(
-            pos.x as i32 * PIXEL_SIZE.0 as i32,
-            pos.y as i32 * PIXEL_SIZE.1 as i32,
-            PIXEL_SIZE.0 as i32,
-            PIXEL_SIZE.1 as i32,
+            i32::from(pos.x) * i32::from(PIXEL_SIZE.0),
+            i32::from(pos.y) * i32::from(PIXEL_SIZE.1),
+            i32::from(PIXEL_SIZE.0),
+            i32::from(PIXEL_SIZE.1),
         )
     }
 }
@@ -147,10 +145,10 @@ impl From<Position> for ggez::graphics::Rect {
 impl<'a> From<&'a Position> for ggez::graphics::Rect {
     fn from(pos: &'a Position) -> Self {
         ggez::graphics::Rect::new_i32(
-            pos.x as i32 * PIXEL_SIZE.0 as i32,
-            pos.y as i32 * PIXEL_SIZE.1 as i32,
-            PIXEL_SIZE.0 as i32,
-            PIXEL_SIZE.1 as i32,
+            i32::from(pos.x) * i32::from(PIXEL_SIZE.0),
+            i32::from(pos.y) * i32::from(PIXEL_SIZE.1),
+            i32::from(PIXEL_SIZE.0),
+            i32::from(PIXEL_SIZE.1),
         )
     }
 }
@@ -170,8 +168,8 @@ impl Snake {
         });
 
         Self {
+            body,
             head: pos,
-            body: body,
             direction: Direction::Right,
         }
     }
@@ -185,7 +183,7 @@ impl Snake {
     }
 
     fn draw(&self, ctx: &mut ggez::Context) -> ggez::GameResult<()> {
-        for pos in self.body.iter() {
+        for pos in &self.body {
             ggez::graphics::set_color(ctx, GREEN.into())?;
             ggez::graphics::rectangle(ctx, ggez::graphics::DrawMode::Fill, pos.into())?;
         }
@@ -203,7 +201,7 @@ struct Fruit {
 
 impl Fruit {
     pub fn new(pos: Position) -> Self {
-        Self { pos: pos }
+        Self { pos }
     }
 
     fn update(&mut self) {}
