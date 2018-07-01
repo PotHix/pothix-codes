@@ -131,17 +131,6 @@ impl From<(i16, i16)> for Position {
     }
 }
 
-impl From<Position> for ggez::graphics::Rect {
-    fn from(pos: Position) -> Self {
-        ggez::graphics::Rect::new_i32(
-            i32::from(pos.x) * i32::from(PIXEL_SIZE.0),
-            i32::from(pos.y) * i32::from(PIXEL_SIZE.1),
-            i32::from(PIXEL_SIZE.0),
-            i32::from(PIXEL_SIZE.1),
-        )
-    }
-}
-
 impl<'a> From<&'a Position> for ggez::graphics::Rect {
     fn from(pos: &'a Position) -> Self {
         ggez::graphics::Rect::new_i32(
@@ -189,7 +178,7 @@ impl Snake {
         }
 
         ggez::graphics::set_color(ctx, GREEN.into())?;
-        ggez::graphics::rectangle(ctx, ggez::graphics::DrawMode::Fill, self.head.into())?;
+        ggez::graphics::rectangle(ctx, ggez::graphics::DrawMode::Fill, (&self.head).into())?;
 
         Ok(())
     }
@@ -208,7 +197,7 @@ impl Fruit {
 
     fn draw(&self, ctx: &mut ggez::Context) -> ggez::GameResult<()> {
         ggez::graphics::set_color(ctx, RED.into())?;
-        ggez::graphics::rectangle(ctx, ggez::graphics::DrawMode::Fill, self.pos.into())?;
+        ggez::graphics::rectangle(ctx, ggez::graphics::DrawMode::Fill, (&self.pos).into())?;
 
         Ok(())
     }
