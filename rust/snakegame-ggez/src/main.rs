@@ -116,12 +116,26 @@ impl Position {
     }
 
     pub fn new_by_direction(pos: Position, direction: Direction) -> Self {
-        match direction {
-            Direction::Up => Position::new(pos.x, pos.y - 1),
-            Direction::Down => Position::new(pos.x, pos.y + 1),
-            Direction::Left => Position::new(pos.x - 1, pos.y),
-            Direction::Right => Position::new(pos.x + 1, pos.y),
+        let (mut x, mut y) = match direction {
+            Direction::Up => (pos.x, pos.y - 1),
+            Direction::Down => (pos.x, pos.y + 1),
+            Direction::Left => (pos.x - 1, pos.y),
+            Direction::Right => (pos.x + 1, pos.y),
+        };
+
+        if x < 0 {
+            x = SIZE_IN_PIXEL.0;
+        } else if x > SIZE_IN_PIXEL.0 {
+            x = 0;
         }
+
+        if y >= SIZE_IN_PIXEL.1 {
+            y = 0;
+        } else if y < 0 {
+            y = SIZE_IN_PIXEL.1;
+        }
+
+        Position::new(x, y)
     }
 }
 
@@ -236,3 +250,4 @@ fn main() {
 // 9. use direction to add a new head (following that direction) and pop one piece of the body
 //10. implement FPS
 //11. implement the basics of a fruit to be able to print (update and draw)
+//12. implement the logic to deal with the screen boundaries
