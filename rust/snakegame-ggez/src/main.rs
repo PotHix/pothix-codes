@@ -30,6 +30,12 @@ impl Game {
             fruit: Fruit::new(FRUIT_INIT_POS.into()),
         }
     }
+
+    fn gameover(ctx: &mut ggez::Context) {
+        if let Err(e) = ctx.quit() {
+            println!("Cannot leave the game right now: {}", e);
+        }
+    }
 }
 
 impl ggez::event::EventHandler for Game {
@@ -40,6 +46,7 @@ impl ggez::event::EventHandler for Game {
             self.snake.update();
             self.fruit.update();
         }
+
         Ok(())
     }
 
@@ -61,9 +68,7 @@ impl ggez::event::EventHandler for Game {
         _repeat: bool,
     ) {
         if keycode == ggez::event::Keycode::Escape {
-            if let Err(e) = ctx.quit() {
-                println!("Cannot leave the game right now: {}", e);
-            }
+            Self::gameover(ctx);
         }
 
         if let Some(direction) = Direction::from_keycode(keycode) {
