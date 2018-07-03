@@ -129,15 +129,15 @@ impl Position {
         };
 
         if x < 0 {
-            x = SIZE_IN_PIXEL.0;
-        } else if x > SIZE_IN_PIXEL.0 {
+            x = SIZE_IN_PIXEL.0 - 1;
+        } else if x >= SIZE_IN_PIXEL.0 {
             x = 0;
         }
 
         if y >= SIZE_IN_PIXEL.1 {
             y = 0;
         } else if y < 0 {
-            y = SIZE_IN_PIXEL.1;
+            y = SIZE_IN_PIXEL.1 - 1;
         }
 
         Position::new(x, y)
