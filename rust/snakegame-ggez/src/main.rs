@@ -43,8 +43,13 @@ impl ggez::event::EventHandler for Game {
         const DESIRED_FPS: i8 = 10;
 
         while ggez::timer::check_update_time(ctx, DESIRED_FPS as u32) {
-            self.snake.update();
+            self.snake.update(&self.fruit);
             self.fruit.update();
+
+            match self.snake.state {
+                SnakeState::SelfCollision => Self::gameover(ctx),
+                _ => (),
+            }
         }
 
         Ok(())
@@ -97,7 +102,7 @@ impl Direction {
     }
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 struct Position {
     x: i16,
     y: i16,
@@ -161,9 +166,16 @@ impl<'a> From<&'a Position> for ggez::graphics::Rect {
     }
 }
 
+enum SnakeState {
+    Moving,
+    SelfCollision,
+    AteFruit,
+}
+
 struct Snake {
     head: Position,
     body: LinkedList<Position>,
+    state: SnakeState,
     direction: Direction,
 }
 
@@ -178,16 +190,36 @@ impl Snake {
         Self {
             body,
             head: pos,
+            state: SnakeState::Moving,
             direction: Direction::Right,
         }
     }
 
-    fn update(&mut self) {
+    fn self_collision(&self) -> bool {
+        for segment in &self.body {
+            if self.head == *segment {
+                return true;
+            }
+        }
+
+        false
+    }
+
+    fn update(&mut self, fruit: &Fruit) {
         let new_head = Position::new_by_direction(self.head, self.direction);
         self.body.push_front(self.head);
         self.head = new_head;
 
-        self.body.pop_back();
+        // check collision
+        if self.head == fruit.pos {
+            self.state = SnakeState::AteFruit;
+        } else if self.self_collision() {
+            self.state = SnakeState::SelfCollision;
+            self.body.pop_back();
+        } else {
+            self.state = SnakeState::Moving;
+            self.body.pop_back();
+        }
     }
 
     fn draw(&self, ctx: &mut ggez::Context) -> ggez::GameResult<()> {
