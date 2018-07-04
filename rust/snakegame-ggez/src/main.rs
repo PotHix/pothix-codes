@@ -48,7 +48,8 @@ impl ggez::event::EventHandler for Game {
 
             match self.snake.state {
                 SnakeState::SelfCollision => Self::gameover(ctx),
-                _ => (),
+                SnakeState::AteFruit => self.fruit.regenerate(),
+                SnakeState::Moving => (),
             }
         }
 
@@ -252,6 +253,10 @@ impl Fruit {
 
         Ok(())
     }
+
+    fn regenerate(&mut self) {
+        self.pos = Position::random(SIZE_IN_PIXEL.0, SIZE_IN_PIXEL.1);
+    }
 }
 
 fn main() {
@@ -288,3 +293,5 @@ fn main() {
 //10. implement FPS
 //11. implement the basics of a fruit to be able to print (update and draw)
 //12. implement the logic to deal with the screen boundaries
+//13. increase the player size when he gets a fruit
+//14. regenerate the fruit when the snake eats it
