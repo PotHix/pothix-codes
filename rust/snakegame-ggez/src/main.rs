@@ -47,7 +47,7 @@ impl ggez::event::EventHandler for Game {
             self.fruit.update();
 
             match self.snake.state {
-                SnakeState::SelfCollision => Self::gameover(ctx),
+                SnakeState::SelfCollision => self.snake.reset(),
                 SnakeState::AteFruit => self.fruit.regenerate(),
                 SnakeState::Moving => (),
             }
@@ -126,12 +126,12 @@ impl Position {
         }
     }
 
-    pub fn new_by_direction(pos: Position, direction: Direction) -> Self {
+    pub fn new_by_direction(x: i16, y: i16, direction: Direction) -> Self {
         let (mut x, mut y) = match direction {
-            Direction::Up => (pos.x, pos.y - 1),
-            Direction::Down => (pos.x, pos.y + 1),
-            Direction::Left => (pos.x - 1, pos.y),
-            Direction::Right => (pos.x + 1, pos.y),
+            Direction::Up => (x, y - 1),
+            Direction::Down => (x, y + 1),
+            Direction::Left => (x - 1, y),
+            Direction::Right => (x + 1, y),
         };
 
         if x < 0 {
@@ -182,18 +182,26 @@ struct Snake {
 
 impl Snake {
     pub fn new(pos: Position) -> Self {
+        let direction = Direction::Right;
         let mut body = LinkedList::new();
-        body.push_front(Position {
-            x: pos.x - 1,
-            y: pos.y,
-        });
+        body.push_front(Position::new_by_direction(pos.x, pos.y, direction));
 
         Self {
             body,
+            direction,
             head: pos,
             state: SnakeState::Moving,
-            direction: Direction::Right,
         }
+    }
+
+    fn reset(&mut self) {
+        let mut new_body = LinkedList::new();
+        new_body.push_front(Position::new_by_direction(
+            self.head.x,
+            self.head.y,
+            self.direction,
+        ));
+        self.body = new_body;
     }
 
     fn self_collision(&self) -> bool {
@@ -207,7 +215,7 @@ impl Snake {
     }
 
     fn update(&mut self, fruit: &Fruit) {
-        let new_head = Position::new_by_direction(self.head, self.direction);
+        let new_head = Position::new_by_direction(self.head.x, self.head.y, self.direction);
         self.body.push_front(self.head);
         self.head = new_head;
 
@@ -295,3 +303,4 @@ fn main() {
 //12. implement the logic to deal with the screen boundaries
 //13. increase the player size when he gets a fruit
 //14. regenerate the fruit when the snake eats it
+//15. implement a reset for the snake instead of a gameover
