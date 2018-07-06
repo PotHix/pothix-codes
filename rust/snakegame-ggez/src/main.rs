@@ -17,6 +17,8 @@ const SCREEN_SIZE: (i16, i16) = (
 const GREEN: [f32; 4] = [0.0, 1.0, 0.0, 1.0];
 const RED: [f32; 4] = [1.0, 0.0, 0.0, 1.0];
 
+const DESIRED_FPS: u32 = 8;
+
 struct Game {
     snake: Snake,
     fruit: Fruit,
@@ -39,9 +41,7 @@ impl Game {
 
 impl ggez::event::EventHandler for Game {
     fn update(&mut self, ctx: &mut ggez::Context) -> ggez::GameResult<()> {
-        const DESIRED_FPS: i8 = 10;
-
-        while ggez::timer::check_update_time(ctx, DESIRED_FPS as u32) {
+        while ggez::timer::check_update_time(ctx, DESIRED_FPS) {
             self.snake.update(&self.fruit);
             self.fruit.update();
 
@@ -258,7 +258,7 @@ impl Fruit {
         Self { pos }
     }
 
-    fn update(&mut self) {}
+    fn update(&self) {}
 
     fn draw(&self, ctx: &mut ggez::Context) -> ggez::GameResult<()> {
         ggez::graphics::set_color(ctx, RED.into())?;
