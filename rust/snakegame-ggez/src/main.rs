@@ -125,12 +125,17 @@ impl Position {
         }
     }
 
-    pub fn new_by_direction(x: i16, y: i16, direction: Direction) -> Self {
+    pub fn new_by_direction(x: i16, y: i16, direction: Direction, reverse: bool) -> Self {
+        let mut accel = 1;
+        if reverse {
+            accel *= -1;
+        }
+
         let (mut x, mut y) = match direction {
-            Direction::Up => (x, y - 1),
-            Direction::Down => (x, y + 1),
-            Direction::Left => (x - 1, y),
-            Direction::Right => (x + 1, y),
+            Direction::Up => (x, y - accel),
+            Direction::Down => (x, y + accel),
+            Direction::Left => (x - accel, y),
+            Direction::Right => (x + accel, y),
         };
 
         if x < 0 {
@@ -183,7 +188,7 @@ impl Snake {
     pub fn new(pos: Position) -> Self {
         let direction = Direction::Right;
         let mut body = Vec::<Position>::new();
-        body.push(Position::new_by_direction(pos.x, pos.y, direction));
+        body.push(Position::new_by_direction(pos.x, pos.y, direction, true));
 
         Self {
             body,
@@ -199,6 +204,7 @@ impl Snake {
             self.head.x,
             self.head.y,
             self.direction,
+            true,
         ));
         self.body = new_body;
     }
@@ -214,7 +220,7 @@ impl Snake {
     }
 
     fn update(&mut self, fruit: &Fruit) {
-        let new_head = Position::new_by_direction(self.head.x, self.head.y, self.direction);
+        let new_head = Position::new_by_direction(self.head.x, self.head.y, self.direction, false);
         self.body.insert(0, self.head);
         self.head = new_head;
 
