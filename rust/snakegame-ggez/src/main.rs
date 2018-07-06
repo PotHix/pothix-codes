@@ -2,7 +2,6 @@ extern crate ggez;
 extern crate rand;
 
 use rand::Rng; // For the result of thread_rng()
-use std::collections::LinkedList;
 
 const SNAKE_INIT_POS: (i16, i16) = (5, 5);
 const FRUIT_INIT_POS: (i16, i16) = (10, 10);
@@ -175,7 +174,7 @@ enum SnakeState {
 
 struct Snake {
     head: Position,
-    body: LinkedList<Position>,
+    body: Vec<Position>,
     state: SnakeState,
     direction: Direction,
 }
@@ -183,8 +182,8 @@ struct Snake {
 impl Snake {
     pub fn new(pos: Position) -> Self {
         let direction = Direction::Right;
-        let mut body = LinkedList::new();
-        body.push_front(Position::new_by_direction(pos.x, pos.y, direction));
+        let mut body = Vec::<Position>::new();
+        body.push(Position::new_by_direction(pos.x, pos.y, direction));
 
         Self {
             body,
@@ -195,8 +194,8 @@ impl Snake {
     }
 
     fn reset(&mut self) {
-        let mut new_body = LinkedList::new();
-        new_body.push_front(Position::new_by_direction(
+        let mut new_body = Vec::<Position>::new();
+        new_body.push(Position::new_by_direction(
             self.head.x,
             self.head.y,
             self.direction,
@@ -216,7 +215,7 @@ impl Snake {
 
     fn update(&mut self, fruit: &Fruit) {
         let new_head = Position::new_by_direction(self.head.x, self.head.y, self.direction);
-        self.body.push_front(self.head);
+        self.body.insert(0, self.head);
         self.head = new_head;
 
         // check collision
@@ -224,10 +223,10 @@ impl Snake {
             self.state = SnakeState::AteFruit;
         } else if self.self_collision() {
             self.state = SnakeState::SelfCollision;
-            self.body.pop_back();
+            self.body.pop();
         } else {
             self.state = SnakeState::Moving;
-            self.body.pop_back();
+            self.body.pop();
         }
     }
 
