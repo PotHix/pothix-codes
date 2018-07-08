@@ -85,8 +85,8 @@ impl event::EventHandler for Game {
 impl<'a> From<&'a Position> for ggez::graphics::Rect {
     fn from(pos: &'a Position) -> Self {
         ggez::graphics::Rect::new(
-            (pos.x * PIXEL_SIZE.0).into(),
-            (pos.y * PIXEL_SIZE.1).into(),
+            pos.x.into(),
+            pos.y.into(),
             SIZE_IN_PIXELS.0.into(),
             SIZE_IN_PIXELS.1.into(),
         )
@@ -115,35 +115,27 @@ impl Direction {
 
 struct Snake {
     head: Position,
-    body: Vec<Position>,
     direction: Direction,
 }
 
 impl Snake {
     pub fn new(x: i16, y: i16) -> Self {
-        let direction = Direction::Right;
-        let mut body = Vec::<Position>::new();
-        body.push(Position::new_by_direction(x, y, direction, false));
-
         Self {
             head: Position::new(x, y),
-            body: body,
-            direction: direction,
+            direction: Direction::Right,
         }
     }
 
     fn update(&mut self) -> GameResult<()> {
         let new_head = Position::new_by_direction(self.head.x, self.head.y, self.direction, false);
-        self.body.insert(0, self.head);
         self.head = new_head;
-
-        self.body.pop();
 
         Ok(())
     }
 
     fn draw(&self, ctx: &mut Context) -> GameResult<()> {
         ggez::graphics::set_color(ctx, GREEN.into())?;
+        //ggez::graphics::rectangle(ctx, ggez::graphics::DrawMode::Fill, (&self.head).into())
         ggez::graphics::rectangle(
             ctx,
             ggez::graphics::DrawMode::Fill,
@@ -153,13 +145,7 @@ impl Snake {
                 SIZE_IN_PIXELS.0.into(),
                 SIZE_IN_PIXELS.1.into(),
             ),
-        )?;
-
-        for segment in &self.body {
-            ggez::graphics::rectangle(ctx, ggez::graphics::DrawMode::Fill, segment.into())?;
-        }
-
-        Ok(())
+        )
     }
 }
 
@@ -190,7 +176,6 @@ impl Fruit {
     }
 }
 
-#[derive(Copy, Clone)]
 struct Position {
     x: i16,
     y: i16,
@@ -207,24 +192,12 @@ impl Position {
             accel *= -1;
         }
 
-        let (mut x, mut y) = match direction {
+        let (x, y) = match direction {
             Direction::Up => (x, y - accel),
             Direction::Down => (x, y + accel),
             Direction::Left => (x - accel, y),
             Direction::Right => (x + accel, y),
         };
-
-        if x < 0 {
-            x = SIZE_IN_PIXELS.0 - 1;
-        } else if x > SIZE_IN_PIXELS.0 - 1 {
-            x = 0;
-        }
-
-        if y < 0 {
-            y = SIZE_IN_PIXELS.1 - 1;
-        } else if y > SIZE_IN_PIXELS.1 - 1 {
-            y = 0;
-        }
 
         Position::new(x, y)
     }
