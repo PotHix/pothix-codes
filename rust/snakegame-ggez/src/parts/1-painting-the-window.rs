@@ -10,7 +10,7 @@ const SCREEN_SIZE: (u32, u32) = (
     (PIXEL_SIZE.1 * SIZE_IN_PIXELS.1) as u32,
 );
 
-use ggez::{event, Context, ContextBuilder, GameResult};
+use ggez::{event, Context, ContextBuilder};
 
 // All members are here
 struct Game {
@@ -30,29 +30,15 @@ impl Game {
 }
 
 impl event::EventHandler for Game {
-    fn update(&mut self, _ctx: &mut Context) -> GameResult<()> {
-        Ok(())
-    }
-
-    fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
+    fn draw(&mut self, ctx: &mut Context) -> ggez::GameResult<()> {
         ggez::graphics::clear(ctx);
-
-        self.snake.draw(ctx)?;
-
         ggez::graphics::present(ctx);
 
         Ok(())
     }
-}
 
-impl<'a> From<&'a Position> for ggez::graphics::Rect {
-    fn from(pos: &'a Position) -> Self {
-        ggez::graphics::Rect::new(
-            pos.x.into(),
-            pos.y.into(),
-            SIZE_IN_PIXELS.0.into(),
-            SIZE_IN_PIXELS.1.into(),
-        )
+    fn update(&mut self, ctx: &mut Context) -> ggez::GameResult<()> {
+        Ok(())
     }
 }
 
@@ -65,21 +51,6 @@ impl Snake {
         Self {
             head: Position::new(x, y),
         }
-    }
-
-    fn draw(&self, ctx: &mut Context) -> GameResult<()> {
-        ggez::graphics::set_color(ctx, [0.0, 1.0, 0.0, 1.0].into())?;
-        //ggez::graphics::rectangle(ctx, ggez::graphics::DrawMode::Fill, (&self.head).into())
-        ggez::graphics::rectangle(
-            ctx,
-            ggez::graphics::DrawMode::Fill,
-            ggez::graphics::Rect::new(
-                self.head.x.into(),
-                self.head.y.into(),
-                SIZE_IN_PIXELS.0.into(),
-                SIZE_IN_PIXELS.1.into(),
-            ),
-        )
     }
 }
 
