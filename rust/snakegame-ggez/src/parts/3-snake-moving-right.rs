@@ -33,12 +33,6 @@ impl Game {
             snake: Snake::new(SNAKE_INIT_POS.0, SNAKE_INIT_POS.1),
         }
     }
-
-    fn gameover(ctx: &mut Context) {
-        if let Err(e) = ctx.quit() {
-            println!("Cannot quit the game right now: {}", e);
-        }
-    }
 }
 
 impl event::EventHandler for Game {
@@ -59,22 +53,6 @@ impl event::EventHandler for Game {
 
         Ok(())
     }
-
-    fn key_down_event(
-        &mut self,
-        ctx: &mut Context,
-        keycode: ggez::event::Keycode,
-        _keymod: ggez::event::Mod,
-        _repeat: bool,
-    ) {
-        if keycode == ggez::event::Keycode::Escape {
-            Self::gameover(ctx);
-        }
-
-        if let Some(direction) = Direction::from_keycode(keycode) {
-            self.snake.direction = direction;
-        }
-    }
 }
 
 impl<'a> From<&'a Position> for ggez::graphics::Rect {
@@ -94,18 +72,6 @@ enum Direction {
     Down,
     Right,
     Left,
-}
-
-impl Direction {
-    pub fn from_keycode(key: event::Keycode) -> Option<Direction> {
-        match key {
-            event::Keycode::Up => Some(Direction::Up),
-            event::Keycode::Down => Some(Direction::Down),
-            event::Keycode::Left => Some(Direction::Left),
-            event::Keycode::Right => Some(Direction::Right),
-            _ => None,
-        }
-    }
 }
 
 struct Snake {
