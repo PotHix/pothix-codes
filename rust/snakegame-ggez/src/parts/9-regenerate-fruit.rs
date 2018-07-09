@@ -94,10 +94,10 @@ impl event::EventHandler for Game {
 impl<'a> From<&'a Position> for ggez::graphics::Rect {
     fn from(pos: &'a Position) -> Self {
         ggez::graphics::Rect::new(
-            (pos.x * PIXEL_SIZE.0 - 1).into(),
-            (pos.y * PIXEL_SIZE.1 - 1).into(),
-            (SIZE_IN_PIXELS.0 - 1).into(),
-            (SIZE_IN_PIXELS.1 - 1).into(),
+            (pos.x * PIXEL_SIZE.0).into(),
+            (pos.y * PIXEL_SIZE.1).into(),
+            SIZE_IN_PIXELS.0.into(),
+            SIZE_IN_PIXELS.1.into(),
         )
     }
 }
@@ -163,7 +163,7 @@ impl Snake {
             self.head.x,
             self.head.y,
             self.direction,
-            true,
+            false,
         )];
     }
 
@@ -187,7 +187,16 @@ impl Snake {
 
     fn draw(&self, ctx: &mut Context) -> GameResult<()> {
         ggez::graphics::set_color(ctx, GREEN.into())?;
-        ggez::graphics::rectangle(ctx, ggez::graphics::DrawMode::Fill, (&self.head).into())?;
+        ggez::graphics::rectangle(
+            ctx,
+            ggez::graphics::DrawMode::Fill,
+            ggez::graphics::Rect::new(
+                (self.head.x * PIXEL_SIZE.0).into(),
+                (self.head.y * PIXEL_SIZE.1).into(),
+                SIZE_IN_PIXELS.0.into(),
+                SIZE_IN_PIXELS.1.into(),
+            ),
+        )?;
 
         for segment in &self.body {
             ggez::graphics::rectangle(ctx, ggez::graphics::DrawMode::Fill, segment.into())?;
@@ -214,7 +223,17 @@ impl Fruit {
 
     fn draw(&self, ctx: &mut Context) -> GameResult<()> {
         ggez::graphics::set_color(ctx, RED.into())?;
-        ggez::graphics::rectangle(ctx, ggez::graphics::DrawMode::Fill, (&self.pos).into())
+        //ggez::graphics::rectangle(ctx, ggez::graphics::DrawMode::Fill, (&self.pos).into())
+        ggez::graphics::rectangle(
+            ctx,
+            ggez::graphics::DrawMode::Fill,
+            ggez::graphics::Rect::new(
+                (self.pos.x * PIXEL_SIZE.0).into(),
+                (self.pos.y * PIXEL_SIZE.1).into(),
+                SIZE_IN_PIXELS.0.into(),
+                SIZE_IN_PIXELS.1.into(),
+            ),
+        )
     }
 }
 

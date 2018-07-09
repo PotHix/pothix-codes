@@ -1,7 +1,4 @@
 extern crate ggez;
-extern crate rand;
-
-use rand::Rng; // dafuq
 
 const SNAKE_INIT_POS: (i16, i16) = (5, 5);
 const FRUIT_INIT_POS: (i16, i16) = (10, 10);
@@ -55,8 +52,7 @@ impl event::EventHandler for Game {
 
             match self.snake.state {
                 Some(SnakeState::SelfCollision) => self.snake.reset(),
-                Some(SnakeState::AteFruit) => self.fruit.regenerate(),
-                None => (),
+                _ => (),
             }
         }
 
@@ -94,10 +90,10 @@ impl event::EventHandler for Game {
 impl<'a> From<&'a Position> for ggez::graphics::Rect {
     fn from(pos: &'a Position) -> Self {
         ggez::graphics::Rect::new(
-            (pos.x * PIXEL_SIZE.0 - 1).into(),
-            (pos.y * PIXEL_SIZE.1 - 1).into(),
-            (SIZE_IN_PIXELS.0 - 1).into(),
-            (SIZE_IN_PIXELS.1 - 1).into(),
+            (pos.x * PIXEL_SIZE.0).into(),
+            (pos.y * PIXEL_SIZE.1).into(),
+            SIZE_IN_PIXELS.0.into(),
+            SIZE_IN_PIXELS.1.into(),
         )
     }
 }
@@ -163,7 +159,7 @@ impl Snake {
             self.head.x,
             self.head.y,
             self.direction,
-            true,
+            false,
         )];
     }
 
@@ -187,7 +183,16 @@ impl Snake {
 
     fn draw(&self, ctx: &mut Context) -> GameResult<()> {
         ggez::graphics::set_color(ctx, GREEN.into())?;
-        ggez::graphics::rectangle(ctx, ggez::graphics::DrawMode::Fill, (&self.head).into())?;
+        ggez::graphics::rectangle(
+            ctx,
+            ggez::graphics::DrawMode::Fill,
+            ggez::graphics::Rect::new(
+                (self.head.x * PIXEL_SIZE.0).into(),
+                (self.head.y * PIXEL_SIZE.1).into(),
+                SIZE_IN_PIXELS.0.into(),
+                SIZE_IN_PIXELS.1.into(),
+            ),
+        )?;
 
         for segment in &self.body {
             ggez::graphics::rectangle(ctx, ggez::graphics::DrawMode::Fill, segment.into())?;
@@ -208,13 +213,19 @@ impl Fruit {
         }
     }
 
-    fn regenerate(&mut self) {
-        self.pos = Position::random(SIZE_IN_PIXELS.0, SIZE_IN_PIXELS.1);
-    }
-
     fn draw(&self, ctx: &mut Context) -> GameResult<()> {
         ggez::graphics::set_color(ctx, RED.into())?;
-        ggez::graphics::rectangle(ctx, ggez::graphics::DrawMode::Fill, (&self.pos).into())
+        //ggez::graphics::rectangle(ctx, ggez::graphics::DrawMode::Fill, (&self.pos).into())
+        ggez::graphics::rectangle(
+            ctx,
+            ggez::graphics::DrawMode::Fill,
+            ggez::graphics::Rect::new(
+                (self.pos.x * PIXEL_SIZE.0).into(),
+                (self.pos.y * PIXEL_SIZE.1).into(),
+                SIZE_IN_PIXELS.0.into(),
+                SIZE_IN_PIXELS.1.into(),
+            ),
+        )
     }
 }
 
@@ -255,18 +266,6 @@ impl Position {
         }
 
         Position::new(x, y)
-    }
-
-    pub fn random(max_x: i16, max_y: i16) -> Self {
-        let mut rng = rand::thread_rng();
-
-        let rand_x = rng.gen_range(0, max_x);
-        let rand_y = rng.gen_range(0, max_y);
-
-        Self {
-            x: rand_x,
-            y: rand_y,
-        }
     }
 }
 
