@@ -1,38 +1,30 @@
 extern crate ggez;
 extern crate rand;
 
-use rand::Rng; // dafuq
+use rand::Rng;
+
+const GREEN: [f32; 4] = [0.0, 1.0, 0.0, 1.0];
+const RED: [f32; 4] = [1.0, 0.0, 0.0, 1.0];
+
+const DEFAULT_FPS: u32 = 10;
 
 const SNAKE_INIT_POS: (i16, i16) = (5, 5);
 const FRUIT_INIT_POS: (i16, i16) = (10, 10);
 
 const PIXEL_SIZE: (i16, i16) = (20, 20);
 const SIZE_IN_PIXELS: (i16, i16) = (20, 20);
-
 const SCREEN_SIZE: (u32, u32) = (
     (PIXEL_SIZE.0 * SIZE_IN_PIXELS.0) as u32,
     (PIXEL_SIZE.1 * SIZE_IN_PIXELS.1) as u32,
 );
 
-const DEFAULT_FPS: u32 = 8;
+use ggez::{event, graphics, timer, Context, GameResult};
 
-const GREEN: [f32; 4] = [0.0, 1.0, 0.0, 1.0];
-const RED: [f32; 4] = [1.0, 0.0, 0.0, 1.0];
-
-const DEFAULT_ACCEL: i16 = 1;
-
-use ggez::{event, timer, Context, ContextBuilder, GameResult};
-
-// All members are here
 struct Game {
     snake: Snake,
     fruit: Fruit,
 }
 
-// And here is the implementation for them
-//
-// The good part of it is that you know all members at once without
-// having to skim the whole code
 impl Game {
     pub fn new() -> Self {
         Self {
@@ -41,63 +33,72 @@ impl Game {
         }
     }
 
-    fn gameover(ctx: &mut Context) {
+    pub fn gameover(ctx: &mut Context) {
         if let Err(e) = ctx.quit() {
-            println!("Cannot quit the game right now: {}", e);
+            println!("Could not quit the game: {}", e);
         }
     }
 }
 
-impl event::EventHandler for Game {
-    fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
-        while timer::check_update_time(ctx, DEFAULT_FPS) {
-            self.snake.update(&self.fruit)?;
+#[derive(Copy, Clone, PartialEq)]
+struct Position {
+    x: i16,
+    y: i16,
+}
 
-            match self.snake.state {
-                Some(SnakeState::SelfCollision) => self.snake.reset(),
-                Some(SnakeState::AteFruit) => self.fruit.regenerate(),
-                None => (),
-            }
-        }
-
-        Ok(())
+impl Position {
+    pub fn new(x: i16, y: i16) -> Self {
+        Self { x, y }
     }
 
-    fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
-        ggez::graphics::clear(ctx);
+    pub fn random(max_x: i16, max_y: i16) -> Self {
+        let mut rng = rand::thread_rng();
 
-        self.fruit.draw(ctx)?;
-        self.snake.draw(ctx)?;
+        let rand_x = rng.gen_range(0, max_x);
+        let rand_y = rng.gen_range(0, max_y);
 
-        ggez::graphics::present(ctx);
+        let x = rand_x;
+        let y = rand_y;
 
-        Ok(())
+        Self { x, y }
     }
 
-    fn key_down_event(
-        &mut self,
-        ctx: &mut Context,
-        keycode: ggez::event::Keycode,
-        _keymod: ggez::event::Mod,
-        _repeat: bool,
-    ) {
-        if keycode == ggez::event::Keycode::Escape {
-            Self::gameover(ctx);
+    pub fn new_by_direction(x: i16, y: i16, direction: Direction, reverse: bool) -> Self {
+        let mut accel = 1;
+        if reverse {
+            accel *= -1;
         }
 
-        if let Some(direction) = Direction::from_keycode(keycode) {
-            self.snake.direction = direction;
+        let (mut x, mut y) = match direction {
+            Direction::Up => (x, y - accel),
+            Direction::Down => (x, y + accel),
+            Direction::Left => (x - accel, y),
+            Direction::Right => (x + accel, y),
+        };
+
+        if x < 0 {
+            x = SIZE_IN_PIXELS.0 - 1;
+        } else if x > SIZE_IN_PIXELS.0 {
+            x = 0;
         }
+
+        if y < 0 {
+            y = SIZE_IN_PIXELS.1 - 1;
+        } else if y > SIZE_IN_PIXELS.1 - 1 {
+            y = 0;
+        }
+
+        Self { x, y }
     }
 }
 
-impl<'a> From<&'a Position> for ggez::graphics::Rect {
-    fn from(pos: &'a Position) -> Self {
-        ggez::graphics::Rect::new(
+impl From<Position> for graphics::Rect {
+    fn from(pos: Position) -> Self {
+        graphics::Rect::new_i32(
             (pos.x * PIXEL_SIZE.0 - 1).into(),
             (pos.y * PIXEL_SIZE.1 - 1).into(),
-            (SIZE_IN_PIXELS.0 - 1).into(),
-            (SIZE_IN_PIXELS.1 - 1).into(),
+            (PIXEL_SIZE.0 - 1).into(),
+            (PIXEL_SIZE.1 - 1).into(),
         )
     }
 }
@@ -106,8 +107,8 @@ impl<'a> From<&'a Position> for ggez::graphics::Rect {
 enum Direction {
     Up,
     Down,
-    Right,
     Left,
+    Right,
 }
 
 impl Direction {
@@ -123,8 +124,8 @@ impl Direction {
 }
 
 enum SnakeState {
-    AteFruit,
     SelfCollision,
+    AteFruit,
 }
 
 struct Snake {
@@ -141,14 +142,27 @@ impl Snake {
         body.push(Position::new_by_direction(x, y, direction, true));
 
         Self {
+            body,
             head: Position::new(x, y),
-            body: body,
             direction: direction,
             state: None,
         }
     }
 
-    fn self_collision(&self) -> bool {
+    pub fn draw(&self, ctx: &mut Context) -> GameResult<()> {
+        // head of the snake
+        graphics::set_color(ctx, GREEN.into())?;
+        graphics::rectangle(ctx, ggez::graphics::DrawMode::Fill, self.head.into())?;
+
+        // body of the snake
+        for segment in &self.body {
+            graphics::rectangle(ctx, ggez::graphics::DrawMode::Fill, segment.clone().into())?;
+        }
+
+        Ok(())
+    }
+
+    pub fn self_collision(&self) -> bool {
         for segment in &self.body {
             if self.head == *segment {
                 return true;
@@ -158,39 +172,27 @@ impl Snake {
         false
     }
 
-    fn reset(&mut self) {
+    pub fn reset(&mut self) {
         self.body = vec![Position::new_by_direction(
             self.head.x,
             self.head.y,
             self.direction,
             true,
-        )];
+        )]
     }
 
-    fn update(&mut self, fruit: &Fruit) -> GameResult<()> {
+    pub fn update(&mut self, fruit: &Fruit) -> GameResult<()> {
         let new_head = Position::new_by_direction(self.head.x, self.head.y, self.direction, false);
         self.body.insert(0, self.head);
         self.head = new_head;
 
-        // check collision
         if self.head == fruit.pos {
             self.state = Some(SnakeState::AteFruit);
         } else if self.self_collision() {
             self.state = Some(SnakeState::SelfCollision);
         } else {
-            self.state = None;
             self.body.pop();
-        }
-
-        Ok(())
-    }
-
-    fn draw(&self, ctx: &mut Context) -> GameResult<()> {
-        ggez::graphics::set_color(ctx, GREEN.into())?;
-        ggez::graphics::rectangle(ctx, ggez::graphics::DrawMode::Fill, (&self.head).into())?;
-
-        for segment in &self.body {
-            ggez::graphics::rectangle(ctx, ggez::graphics::DrawMode::Fill, segment.into())?;
+            self.state = None;
         }
 
         Ok(())
@@ -212,77 +214,70 @@ impl Fruit {
         self.pos = Position::random(SIZE_IN_PIXELS.0, SIZE_IN_PIXELS.1);
     }
 
-    fn draw(&self, ctx: &mut Context) -> GameResult<()> {
-        ggez::graphics::set_color(ctx, RED.into())?;
-        ggez::graphics::rectangle(ctx, ggez::graphics::DrawMode::Fill, (&self.pos).into())
+    pub fn draw(&self, ctx: &mut Context) -> GameResult<()> {
+        // head of the snake
+        graphics::set_color(ctx, RED.into())?;
+        graphics::rectangle(ctx, ggez::graphics::DrawMode::Fill, self.pos.into())?;
+
+        Ok(())
     }
 }
 
-#[derive(Copy, Clone, PartialEq)]
-struct Position {
-    x: i16,
-    y: i16,
-}
+impl ggez::event::EventHandler for Game {
+    fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
+        while timer::check_update_time(ctx, DEFAULT_FPS) {
+            self.snake.update(&self.fruit)?;
 
-impl Position {
-    pub fn new(x: i16, y: i16) -> Self {
-        Self { x, y }
+            match self.snake.state {
+                Some(SnakeState::SelfCollision) => self.snake.reset(),
+                Some(SnakeState::AteFruit) => self.fruit.regenerate(),
+                _ => (),
+            }
+        }
+        Ok(())
     }
 
-    pub fn new_by_direction(x: i16, y: i16, direction: Direction, reverse: bool) -> Self {
-        let mut accel = DEFAULT_ACCEL;
-        if reverse {
-            accel *= -1;
-        }
+    fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
+        ggez::graphics::clear(ctx);
 
-        let (mut x, mut y) = match direction {
-            Direction::Up => (x, y - accel),
-            Direction::Down => (x, y + accel),
-            Direction::Left => (x - accel, y),
-            Direction::Right => (x + accel, y),
-        };
+        self.fruit.draw(ctx)?;
+        self.snake.draw(ctx)?;
 
-        if x < 0 {
-            x = SIZE_IN_PIXELS.0 - 1;
-        } else if x > SIZE_IN_PIXELS.0 - 1 {
-            x = 0;
-        }
+        ggez::graphics::present(ctx);
 
-        if y < 0 {
-            y = SIZE_IN_PIXELS.1 - 1;
-        } else if y > SIZE_IN_PIXELS.1 - 1 {
-            y = 0;
-        }
-
-        Position::new(x, y)
+        Ok(())
     }
 
-    pub fn random(max_x: i16, max_y: i16) -> Self {
-        let mut rng = rand::thread_rng();
+    fn key_down_event(
+        &mut self,
+        ctx: &mut Context,
+        keycode: event::Keycode,
+        _keymod: event::Mod,
+        _repeat: bool,
+    ) {
+        if keycode == event::Keycode::Escape {
+            Self::gameover(ctx);
+        }
 
-        let rand_x = rng.gen_range(0, max_x);
-        let rand_y = rng.gen_range(0, max_y);
-
-        Self {
-            x: rand_x,
-            y: rand_y,
+        if let Some(direction) = Direction::from_keycode(keycode) {
+            self.snake.direction = direction;
         }
     }
 }
 
 fn main() {
-    let ctx = &mut ContextBuilder::new("snakegame", "Rust TDC")
-        .window_setup(ggez::conf::WindowSetup::default().title("Jogo fantastico do TDC"))
+    let ctx = &mut ggez::ContextBuilder::new("snakegame", "TDC")
+        .window_setup(ggez::conf::WindowSetup::default().title("My awesome game"))
         .window_mode(ggez::conf::WindowMode::default().dimensions(SCREEN_SIZE.0, SCREEN_SIZE.1))
         .build()
-        .expect("Failed to build ggez context builder");
-
-    ggez::graphics::set_background_color(ctx, (0, 0, 0).into());
+        .expect("Could not gererate a builder for ggez");
 
     let game = &mut Game::new();
 
+    ggez::graphics::set_background_color(ctx, (0, 0, 0).into());
+
     match event::run(ctx, game) {
-        Err(e) => println!("Ouch! Error raised: {}", e),
+        Err(e) => println!("Ooops, could not start the game: {}", e),
         Ok(_) => println!("Thanks for playing!"),
     }
 }
