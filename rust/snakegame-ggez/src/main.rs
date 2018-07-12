@@ -75,7 +75,33 @@ impl event::EventHandler for Game {
     }
 
     fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
+        while timer::check_update_time(ctx, DEFAULT_FPS as u32) {
+            self.snake.update(&self.fruit)?;
+
+            match self.snake.state {
+                Some(SnakeState::SelfCollision) => self.snake.reset(),
+                Some(SnakeState::AteFruit) => self.fruit.regenerate(),
+                _ => (),
+            }
+        }
+
         Ok(())
+    }
+
+    fn key_down_event(
+        &mut self,
+        ctx: &mut Context,
+        keycode: event::Keycode,
+        _keymod: event::Mod,
+        _repeat: bool,
+    ) {
+        if keycode == event::Keycode::Escape {
+            Self::gameover(ctx);
+        }
+
+        if let Some(direction) = Direction::from_keycode(keycode) {
+            self.snake.direction = direction;
+        }
     }
 }
 
@@ -88,6 +114,18 @@ enum Direction {
     Right,
 }
 
+impl Direction {
+    pub fn from_keycode(key: event::Keycode) -> Option<Direction> {
+        match key {
+            event::Keycode::Up => Some(Direction::Up),
+            event::Keycode::Down => Some(Direction::Down),
+            event::Keycode::Left => Some(Direction::Left),
+            event::Keycode::Right => Some(Direction::Right),
+            _ => None,
+        }
+    }
+}
+
 enum SnakeState {
     SelfCollision,
     AteFruit,
@@ -95,6 +133,7 @@ enum SnakeState {
 
 struct Snake {
     head: Position,
+    body: Vec<Position>,
     direction: Direction,
     state: Option<SnakeState>,
 }
@@ -102,21 +141,47 @@ struct Snake {
 impl Snake {
     pub fn new(x: i16, y: i16) -> Self {
         let direction = Direction::Right;
+        let mut body = Vec::<Position>::new();
+        body.push(Position::new_by_direction(x, y, direction, true));
 
         Self {
             direction,
+            body,
             head: Position::new(x, y),
             state: None,
         }
     }
 
+    fn reset(&mut self) {
+        self.body = vec![Position::new_by_direction(
+            self.head.x,
+            self.head.y,
+            self.direction,
+            true,
+        )];
+    }
+
+    fn self_collision(&self) -> bool {
+        for segment in &self.body {
+            if self.head == *segment {
+                return true;
+            }
+        }
+
+        false
+    }
+
     fn update(&mut self, fruit: &Fruit) -> GameResult<()> {
-        let new_head = Position::new_by_direction(self.head.x, self.head.y, self.direction);
+        let new_head = Position::new_by_direction(self.head.x, self.head.y, self.direction, false);
+        self.body.insert(0, self.head);
         self.head = new_head;
 
         if self.head == fruit.pos {
-            self.state = Some(SnakeState::AteFruit)
+            self.state = Some(SnakeState::AteFruit);
+        } else if self.self_collision() {
+            self.state = Some(SnakeState::SelfCollision);
         } else {
+            self.body.pop();
             self.state = None;
         }
 
@@ -125,22 +190,25 @@ impl Snake {
 
     // draws the snake
     fn draw(&self, ctx: &mut Context) -> GameResult<()> {
-        // this is the Rect we are going to print. The params are:
-        // x position
-        // y position
-        // x size
-        // y size
-        let rect = graphics::Rect::new_i32(
-            (self.head.x).into(),
-            (self.head.y).into(),
-            (PIXEL_SIZE.0 - 1).into(),
-            (PIXEL_SIZE.1 - 1).into(),
-        );
-
         graphics::set_color(ctx, GREEN.into())?;
-        graphics::rectangle(ctx, graphics::DrawMode::Fill, rect)?;
+        graphics::rectangle(ctx, graphics::DrawMode::Fill, self.head.into())?;
+
+        for segment in &self.body {
+            graphics::rectangle(ctx, graphics::DrawMode::Fill, segment.clone().into())?;
+        }
 
         Ok(())
+    }
+}
+
+impl From<Position> for graphics::Rect {
+    fn from(pos: Position) -> graphics::Rect {
+        graphics::Rect::new_i32(
+            (pos.x * PIXEL_SIZE.0).into(),
+            (pos.y * PIXEL_SIZE.1).into(),
+            (PIXEL_SIZE.0 - 1).into(),
+            (PIXEL_SIZE.1 - 1).into(),
+        )
     }
 }
 
@@ -155,23 +223,28 @@ impl Fruit {
         }
     }
 
+    fn regenerate(&mut self) {
+        let mut rng = rand::thread_rng();
+
+        let rand_x = rng.gen_range(0, SIZE_IN_PIXELS.0);
+        let rand_y = rng.gen_range(0, SIZE_IN_PIXELS.1);
+
+        let x = rand_x as i16;
+        let y = rand_y as i16;
+
+        self.pos = Position::new(x, y)
+    }
+
     // draws the fruit, it's the same as the snake
     fn draw(&self, ctx: &mut Context) -> GameResult<()> {
-        let rect = graphics::Rect::new_i32(
-            (self.pos.x).into(),
-            (self.pos.y).into(),
-            (PIXEL_SIZE.0 - 1).into(),
-            (PIXEL_SIZE.1 - 1).into(),
-        );
-
         graphics::set_color(ctx, RED.into())?;
-        graphics::rectangle(ctx, graphics::DrawMode::Fill, rect)?;
+        graphics::rectangle(ctx, graphics::DrawMode::Fill, self.pos.into())?;
 
         Ok(())
     }
 }
 
-#[derive(PartialEq)]
+#[derive(Copy, Clone, PartialEq)]
 struct Position {
     x: i16,
     y: i16,
@@ -184,7 +257,31 @@ impl Position {
 
     // we should be able to add a new segment based on the direction
     // e.g. if it's going right, we should add a new segment on the left
-    pub fn new_by_direction(x: i16, y: i16, direction: Direction) -> Self {
+    pub fn new_by_direction(x: i16, y: i16, direction: Direction, reverse: bool) -> Self {
+        let mut accel = DEFAULT_ACCEL;
+        if reverse {
+            accel *= -1;
+        }
+
+        let (mut x, mut y) = match direction {
+            Direction::Up => (x, y - accel),
+            Direction::Down => (x, y + accel),
+            Direction::Right => (x + accel, y),
+            Direction::Left => (x - accel, y),
+        };
+
+        if x < 0 {
+            x = SIZE_IN_PIXELS.0 - 1;
+        } else if x > SIZE_IN_PIXELS.0 - 1 {
+            x = 0;
+        }
+
+        if y < 0 {
+            y = SIZE_IN_PIXELS.1 - 1;
+        } else if y > SIZE_IN_PIXELS.1 - 1 {
+            y = 0;
+        }
+
         Self { x, y }
     }
 }
