@@ -1,0 +1,8 @@
+[package]
+name = "snakegame-quicksilver"
+version = "0.1.0"
+authors = ["PotHix <pothix@pothix.com>"]
+
+[dependencies]
+rand = "0.5"
+quicksilver = "*"
