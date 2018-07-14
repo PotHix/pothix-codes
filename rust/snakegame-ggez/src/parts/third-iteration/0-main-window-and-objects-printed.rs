@@ -75,6 +75,7 @@ impl event::EventHandler for Game {
     }
 
     fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
+        self.snake.update(&self.fruit)?;
         Ok(())
     }
 }
