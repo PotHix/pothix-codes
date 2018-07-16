@@ -1,13 +1,4 @@
 extern crate ggez;
-extern crate rand;
-
-use rand::Rng;
-
-// speed of the snake
-const DEFAULT_ACCEL: i16 = 1;
-
-// number of frames per second
-const DEFAULT_FPS: i8 = 8;
 
 // initial position for the snake
 const SNAKE_INIT_POS: (i16, i16) = (5, 5);
@@ -33,7 +24,7 @@ const SCREEN_SIZE: (u32, u32) = (
 const GREEN: [f32; 4] = [0.0, 1.0, 0.0, 1.0];
 const RED: [f32; 4] = [1.0, 0.0, 0.0, 1.0];
 
-use ggez::{event, graphics, timer, Context, ContextBuilder, GameResult};
+use ggez::{event, graphics, Context, ContextBuilder, GameResult};
 
 // All members are here
 struct Game {
@@ -52,13 +43,6 @@ impl Game {
             fruit: Fruit::new(FRUIT_INIT_POS.0, FRUIT_INIT_POS.1),
         }
     }
-
-    // just quit the game
-    pub fn gameover(ctx: &mut Context) {
-        if let Err(e) = ctx.quit() {
-            println!("Could not exit the game 😬: {}", e);
-        }
-    }
 }
 
 // implements the game loop for our Game object
@@ -74,66 +58,32 @@ impl event::EventHandler for Game {
         Ok(())
     }
 
-    fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
-        while timer::check_update_time(ctx, DEFAULT_FPS as u32) {
-            self.snake.update(&self.fruit)?;
-
-            match self.snake.state {
-                Some(SnakeState::SelfCollision) => self.snake.reset(),
-                Some(SnakeState::AteFruit) => self.fruit.regenerate(),
-                _ => (),
-            }
-        }
-
+    fn update(&mut self, _ctx: &mut Context) -> GameResult<()> {
+        self.snake.update(&self.fruit)?;
         Ok(())
-    }
-
-    fn key_down_event(
-        &mut self,
-        ctx: &mut Context,
-        keycode: event::Keycode,
-        _keymod: event::Mod,
-        _repeat: bool,
-    ) {
-        if keycode == event::Keycode::Escape {
-            Self::gameover(ctx);
-        }
-
-        if let Some(direction) = Direction::from_keycode(keycode) {
-            self.snake.direction = direction;
-        }
     }
 }
 
 // we should be able to copy and clone this enum
 #[derive(Copy, Clone)]
 enum Direction {
+    #[allow(dead_code)]
     Up,
+    #[allow(dead_code)]
     Down,
+    #[allow(dead_code)]
     Left,
     Right,
 }
 
-impl Direction {
-    pub fn from_keycode(key: event::Keycode) -> Option<Direction> {
-        match key {
-            event::Keycode::Up => Some(Direction::Up),
-            event::Keycode::Down => Some(Direction::Down),
-            event::Keycode::Left => Some(Direction::Left),
-            event::Keycode::Right => Some(Direction::Right),
-            _ => None,
-        }
-    }
-}
-
 enum SnakeState {
+    #[allow(dead_code)]
     SelfCollision,
     AteFruit,
 }
 
 struct Snake {
     head: Position,
-    body: Vec<Position>,
     direction: Direction,
     state: Option<SnakeState>,
 }
@@ -141,47 +91,21 @@ struct Snake {
 impl Snake {
     pub fn new(x: i16, y: i16) -> Self {
         let direction = Direction::Right;
-        let mut body = Vec::<Position>::new();
-        body.push(Position::new_by_direction(x, y, direction, true));
 
         Self {
             direction,
-            body,
             head: Position::new(x, y),
             state: None,
         }
     }
 
-    fn reset(&mut self) {
-        self.body = vec![Position::new_by_direction(
-            self.head.x,
-            self.head.y,
-            self.direction,
-            true,
-        )];
-    }
-
-    fn self_collision(&self) -> bool {
-        for segment in &self.body {
-            if self.head == *segment {
-                return true;
-            }
-        }
-
-        false
-    }
-
     fn update(&mut self, fruit: &Fruit) -> GameResult<()> {
-        let new_head = Position::new_by_direction(self.head.x, self.head.y, self.direction, false);
-        self.body.insert(0, self.head);
+        let new_head = Position::new_by_direction(self.head.x, self.head.y, self.direction);
         self.head = new_head;
 
         if self.head == fruit.pos {
-            self.state = Some(SnakeState::AteFruit);
-        } else if self.self_collision() {
-            self.state = Some(SnakeState::SelfCollision);
+            self.state = Some(SnakeState::AteFruit)
         } else {
-            self.body.pop();
             self.state = None;
         }
 
@@ -193,22 +117,7 @@ impl Snake {
         graphics::set_color(ctx, GREEN.into())?;
         graphics::rectangle(ctx, graphics::DrawMode::Fill, self.head.into())?;
 
-        for segment in &self.body {
-            graphics::rectangle(ctx, graphics::DrawMode::Fill, segment.clone().into())?;
-        }
-
         Ok(())
-    }
-}
-
-impl From<Position> for graphics::Rect {
-    fn from(pos: Position) -> graphics::Rect {
-        graphics::Rect::new_i32(
-            (pos.x * PIXEL_SIZE.0).into(),
-            (pos.y * PIXEL_SIZE.1).into(),
-            (PIXEL_SIZE.0 - 1).into(),
-            (PIXEL_SIZE.1 - 1).into(),
-        )
     }
 }
 
@@ -223,24 +132,24 @@ impl Fruit {
         }
     }
 
-    fn regenerate(&mut self) {
-        let mut rng = rand::thread_rng();
-
-        let rand_x = rng.gen_range(0, SIZE_IN_PIXELS.0);
-        let rand_y = rng.gen_range(0, SIZE_IN_PIXELS.1);
-
-        let x = rand_x as i16;
-        let y = rand_y as i16;
-
-        self.pos = Position::new(x, y)
-    }
-
     // draws the fruit, it's the same as the snake
     fn draw(&self, ctx: &mut Context) -> GameResult<()> {
         graphics::set_color(ctx, RED.into())?;
         graphics::rectangle(ctx, graphics::DrawMode::Fill, self.pos.into())?;
 
         Ok(())
+    }
+}
+
+/// converts from a Position to a graphics::Rect via into()
+impl From<Position> for graphics::Rect {
+    fn from(pos: Position) -> Self {
+        graphics::Rect::new_i32(
+            (pos.x * PIXEL_SIZE.0).into(),
+            (pos.y * PIXEL_SIZE.1).into(),
+            (PIXEL_SIZE.0 - 1).into(),
+            (PIXEL_SIZE.1 - 1).into(),
+        )
     }
 }
 
@@ -257,31 +166,7 @@ impl Position {
 
     // we should be able to add a new segment based on the direction
     // e.g. if it's going right, we should add a new segment on the left
-    pub fn new_by_direction(x: i16, y: i16, direction: Direction, reverse: bool) -> Self {
-        let mut accel = DEFAULT_ACCEL;
-        if reverse {
-            accel *= -1;
-        }
-
-        let (mut x, mut y) = match direction {
-            Direction::Up => (x, y - accel),
-            Direction::Down => (x, y + accel),
-            Direction::Right => (x + accel, y),
-            Direction::Left => (x - accel, y),
-        };
-
-        if x < 0 {
-            x = SIZE_IN_PIXELS.0 - 1;
-        } else if x > SIZE_IN_PIXELS.0 - 1 {
-            x = 0;
-        }
-
-        if y < 0 {
-            y = SIZE_IN_PIXELS.1 - 1;
-        } else if y > SIZE_IN_PIXELS.1 - 1 {
-            y = 0;
-        }
-
+    pub fn new_by_direction(x: i16, y: i16, _direction: Direction) -> Self {
         Self { x, y }
     }
 }
