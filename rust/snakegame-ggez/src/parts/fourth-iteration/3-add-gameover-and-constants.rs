@@ -1,6 +1,7 @@
 extern crate ggez;
+extern crate rand;
 
-#[allow(unused_import)]
+#[allow(unused_imports)]
 use rand::Rng;
 
 // default FPS to avoid magic numbers
@@ -171,7 +172,7 @@ impl From<Position> for graphics::Rect {
     }
 }
 
-#[derive(PartialEq)]
+#[derive(Copy, Clone, PartialEq)]
 struct Position {
     x: i16,
     y: i16,
