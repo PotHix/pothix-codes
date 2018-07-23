@@ -193,7 +193,7 @@ impl Snake {
         graphics::rectangle(ctx, graphics::DrawMode::Fill, self.head.into())?;
 
         for segment in &self.body {
-            graphics::rectangle(ctx, graphics::DrawMode::Fill, segment.clone().into())?;
+            graphics::rectangle(ctx, graphics::DrawMode::Fill, (*segment).into())?;
         }
         Ok(())
     }
