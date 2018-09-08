@@ -9,3 +9,6 @@ Python, and Ruby.
 I tried to make it as simple as possible to be able to do most of the code in
 50 minutes (had to start with some boilerplate code to draw the window). The
 reasoning behind the talk is to show how cool is to learn Rust by making games.
+
+If you're just looking for the final code here, I would recommend you to pick
+the snakegame_complete with the biggest number. :)
