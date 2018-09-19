@@ -199,7 +199,7 @@ impl Position {
 }
 
 fn main() {
-    let ctx = &mut ContextBuilder::new("snakegame", "Rust TDC")
+    let ctx = &mut ContextBuilder::new("snakegame", "PotHix")
         .window_setup(ggez::conf::WindowSetup::default().title("My marvelous game!"))
         .window_mode(ggez::conf::WindowMode::default().dimensions(SCREEN_SIZE.0, SCREEN_SIZE.1))
         .build()
