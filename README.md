@@ -14,5 +14,5 @@ Between these codes you may find:
 The main idea is to keep just one repository for all unfinished or test projects
 instead of pollute my Github account with lots of no valuable repositories.
 
-You may find good things here, but prepare yourself to see very old codes as
-well. :)
+You may or may not find good things here. You should also prepare yourself to
+see very old codes as well. :)
