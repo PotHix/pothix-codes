@@ -1,5 +1,5 @@
 [package]
-name = "goodreads-to-roam"
+name = "goodreads-to-hugo"
 version = "0.1.0"
 authors = ["PotHix <pothix@pothix.com>"]
 edition = "2018"

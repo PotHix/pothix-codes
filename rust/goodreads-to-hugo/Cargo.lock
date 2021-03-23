@@ -70,7 +70,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "goodreads-to-roam"
+name = "goodreads-to-hugo"
 version = "0.1.0"
 dependencies = [
  "csv",
