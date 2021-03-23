@@ -55,8 +55,6 @@ fn example() -> Result<(), Box<dyn Error>> {
 
         fs::write(filename.as_str().to_lowercase(), markdown.as_bytes())
             .expect("could not write to the markdown file");
-
-        println!("{:?}", record);
     }
     Ok(())
 }
