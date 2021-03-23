@@ -33,7 +33,7 @@ fn example() -> Result<(), Box<dyn Error>> {
         markdown.push_str("\"\n");
         markdown.push_str("date = ");
         markdown.push_str(record.dateread.replace("/", "-").as_str());
-        markdown.push_str("\"\n");
+        markdown.push_str("\n");
         markdown.push_str("tags = [\n");
         markdown.push_str("    \"english\",\n");
         markdown.push_str("    \"books\",\n");
