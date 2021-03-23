@@ -7,6 +7,8 @@ use serde::Deserialize;
 use std::fs::OpenOptions;
 use std::io::Write;
 
+use html2text::from_read;
+
 #[derive(Debug, Deserialize)]
 struct Record {
     title: String,
@@ -27,7 +29,7 @@ fn example() -> Result<(), Box<dyn Error>> {
         markdown.push_str(record.title.as_str());
         markdown.push_str("\"\n");
         markdown.push_str("date = ");
-        markdown.push_str(record.dateread.as_str());
+        markdown.push_str(record.dateread.replace("/", "-").as_str());
         markdown.push_str("\"\n");
         markdown.push_str("tags = [\n");
         markdown.push_str("    \"english\",\n");
@@ -44,7 +46,7 @@ fn example() -> Result<(), Box<dyn Error>> {
             markdown.push_str("⭐️");
         }
         markdown.push_str(".\n\n");
-        markdown.push_str(record.review.as_str());
+        markdown.push_str(from_read(record.review.as_bytes(), 9000).as_str());
 
         OpenOptions::new()
             .write(true)

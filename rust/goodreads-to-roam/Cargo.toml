@@ -9,3 +9,4 @@ edition = "2018"
 [dependencies]
 csv = "1.1"
 serde = { version = "1", features = ["derive"] }
+html2text = "0.2.1"
