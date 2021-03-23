@@ -4,13 +4,12 @@ use std::process;
 
 use serde::Deserialize;
 
-use std::fs::OpenOptions;
-use std::io::Write;
-
 use html2text::from_read;
+use std::fs;
 
 #[derive(Debug, Deserialize)]
 struct Record {
+    id: String,
     title: String,
     author: String,
     rating: u8,
@@ -23,6 +22,10 @@ fn example() -> Result<(), Box<dyn Error>> {
     for result in rdr.deserialize() {
         let record: Record = result?;
         let mut markdown = String::new();
+
+        let mut filename = "/tmp/".to_string();
+        filename.push_str(record.title.replace(" ", "_").as_str());
+        filename.push_str(".md");
 
         markdown.push_str("+++\n");
         markdown.push_str("title = \"");
@@ -39,7 +42,9 @@ fn example() -> Result<(), Box<dyn Error>> {
 
         markdown.push_str("Book: [");
         markdown.push_str(record.title.as_str());
-        markdown.push_str("](https://www.goodreads.com/review/) by ");
+        markdown.push_str("](https://www.goodreads.com/book/show/");
+        markdown.push_str(record.id.as_str());
+        markdown.push_str(") by ");
         markdown.push_str(record.author.as_str());
         markdown.push_str(". Rating: ");
         for _ in 0..record.rating {
@@ -48,12 +53,7 @@ fn example() -> Result<(), Box<dyn Error>> {
         markdown.push_str(".\n\n");
         markdown.push_str(from_read(record.review.as_bytes(), 9000).as_str());
 
-        OpenOptions::new()
-            .write(true)
-            .create(true)
-            .append(true)
-            .open("/tmp/cegela")?
-            .write_all(markdown.as_bytes())
+        fs::write(filename.as_str().to_lowercase(), markdown.as_bytes())
             .expect("could not write to the markdown file");
 
         println!("{:?}", record);
