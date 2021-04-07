@@ -3,7 +3,7 @@ use std::error::Error;
 use std::io;
 use std::process;
 
-use chrono::prelude::DateTime;
+use chrono::prelude::*;
 use chrono::Local;
 use std::time::{Duration, UNIX_EPOCH};
 
@@ -34,8 +34,6 @@ fn transform() -> Result<(), Box<dyn Error>> {
         let d = UNIX_EPOCH + Duration::from_secs(tweet.timestamp);
         let datetime = DateTime::<Local>::from(d);
 
-        let strftime_string = "%B %dth %Y";
-        /*
         let strftime_string = match datetime.day() {
             1 => "%B %dst, %Y",
             2 => "%B %dnd, %Y",
@@ -46,7 +44,6 @@ fn transform() -> Result<(), Box<dyn Error>> {
             31 => "%B %dst, %Y",
             _ => "%B %dth %Y",
         };
-        */
 
         let mut lines = Vec::new();
         lines.push(RoamLine {
