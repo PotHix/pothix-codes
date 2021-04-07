@@ -17,7 +17,7 @@ struct Record {
     review: String,
 }
 
-fn example() -> Result<(), Box<dyn Error>> {
+fn transform() -> Result<(), Box<dyn Error>> {
     let mut rdr = csv::Reader::from_reader(io::stdin());
     for result in rdr.deserialize() {
         let record: Record = result?;
@@ -60,8 +60,8 @@ fn example() -> Result<(), Box<dyn Error>> {
 }
 
 fn main() {
-    if let Err(err) = example() {
-        println!("error running example: {}", err);
+    if let Err(err) = transform() {
+        println!("error running the transform function: {}", err);
         process::exit(1);
     }
 }
