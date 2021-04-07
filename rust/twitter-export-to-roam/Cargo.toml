@@ -1,0 +1,13 @@
+[package]
+name = "twitter-export-to-roam"
+version = "0.1.0"
+authors = ["PotHix <pothix@pothix.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+chrono = "0.4.19"
+csv = "1.1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1.0.64"
