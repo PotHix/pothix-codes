@@ -13,14 +13,14 @@ struct Tweet {
     tweet: String,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
 struct RoamDaily {
     // must be on the lines of "April 1st, 2021"
     title: String,
     children: Vec<RoamLine>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
 struct RoamLine {
     // must follow the structure: "12:13 Working on my stuff #tweet"
     string: String,
@@ -28,6 +28,15 @@ struct RoamLine {
 
 fn transform() -> Result<(), Box<dyn Error>> {
     let mut reader = csv::Reader::from_reader(io::stdin());
+
+    let mut current_day = 0;
+    let mut alldays = Vec::<RoamDaily>::new();
+
+    let mut daily = RoamDaily {
+        title: String::from(""),
+        children: Vec::new(),
+    };
+
     for result in reader.deserialize() {
         let tweet: Tweet = result?;
 
@@ -42,22 +51,26 @@ fn transform() -> Result<(), Box<dyn Error>> {
             22 => "%B %dnd, %Y",
             23 => "%B %drd, %Y",
             31 => "%B %dst, %Y",
-            _ => "%B %dth %Y",
+            _ => "%B %dth, %Y",
         };
 
-        let mut lines = Vec::new();
-        lines.push(RoamLine {
+        if current_day != 0 && current_day != datetime.day() {
+            alldays.push(daily.clone());
+            daily.children = Vec::new();
+            //println!("{}", serde_json::to_string(&alldays).unwrap());
+        }
+
+        daily.title = datetime.format(strftime_string).to_string();
+        daily.children.push(RoamLine {
             string: tweet.tweet.clone(),
         });
 
-        let daily = RoamDaily {
-            title: datetime.format(strftime_string).to_string(), //tweet.timestamp.clone(),
-            children: lines,
-        };
-
-        let content = serde_json::to_string(&daily).unwrap();
-        println!("{}", content);
+        current_day = datetime.day();
     }
+
+    let content = serde_json::to_string(&alldays).unwrap();
+    println!("{}", content);
+
     Ok(())
 }
 
