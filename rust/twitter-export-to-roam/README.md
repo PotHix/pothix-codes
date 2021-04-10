@@ -24,7 +24,7 @@ I even used `jq` to make the json look better:
 $ cargo run --quiet </path/of/the/csv/file.csv | jq '.' > /path/of/the/generated/json/file.json
 ```
 
-I will generate a JSON file that looks like this:
+It will generate a JSON file that looks like this:
 
 ```
 [
