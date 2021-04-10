@@ -57,12 +57,16 @@ fn transform() -> Result<(), Box<dyn Error>> {
         if current_day != 0 && current_day != datetime.day() {
             alldays.push(daily.clone());
             daily.children = Vec::new();
-            //println!("{}", serde_json::to_string(&alldays).unwrap());
         }
 
         daily.title = datetime.format(strftime_string).to_string();
+
+        let mut tweetcontent = datetime.format("%H:%M ").to_string();
+        tweetcontent.push_str(tweet.tweet.clone().replace("#-#", ",").as_str());
+        tweetcontent.push_str(" #tweet");
+
         daily.children.push(RoamLine {
-            string: tweet.tweet.clone(),
+            string: tweetcontent,
         });
 
         current_day = datetime.day();
