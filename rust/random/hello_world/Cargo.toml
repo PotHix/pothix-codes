@@ -4,4 +4,4 @@ version = "0.1.0"
 authors = ["PotHix <pothix@pothix.com>"]
 
 [dependencies]
-time = "0.1.12"
+time = "0.2.0"
